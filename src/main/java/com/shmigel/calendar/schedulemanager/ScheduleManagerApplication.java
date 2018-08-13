@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+
 @SpringBootApplication
 public class ScheduleManagerApplication {
 
@@ -18,9 +20,9 @@ public class ScheduleManagerApplication {
 //		Calendar c = new Calendar();
 	}
 
-	@RequestMapping(value = "/", consumes = "text/plain")
-	public ResponseEntity<?> commonResponse(@RequestBody String  payload) {
-		System.out.println(payload);
+	@RequestMapping(value = "/")
+	public ResponseEntity<?> commonResponse(@RequestBody String body) {
+		System.out.println(body);
 		return ResponseEntity.ok().build();
 	}
 }
