@@ -27,6 +27,7 @@ public class ScheduleManagerApplication {
 	@RequestMapping(value = "/")
 	public ResponseEntity<?> commonResponse(@RequestBody String body) {
 //		System.out.println(body);
+		logger.info("Receive request with body: {}", body);
 		return ResponseEntity.ok().build();
 	}
 }
