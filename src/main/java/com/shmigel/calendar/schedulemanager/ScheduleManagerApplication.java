@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 @SpringBootApplication
+@Controller
 public class ScheduleManagerApplication {
 
-	private final Logger logger = LoggerFactory.getLogger(ScheduleManagerApplication.class);
+	private static final Logger logger = LoggerFactory.getLogger(ScheduleManagerApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScheduleManagerApplication.class, args);
+		logger.info("Application started");
 //		Calendar c = new Calendar();
 	}
 
@@ -28,6 +30,6 @@ public class ScheduleManagerApplication {
 	public ResponseEntity<?> commonResponse(@RequestBody String body) {
 //		System.out.println(body);
 		logger.info("Receive request with body: {}", body);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().body("It's working");
 	}
 }
