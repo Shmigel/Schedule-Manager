@@ -11,11 +11,15 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Request {
 
+    private QueryResult queryResult;
+
     private OriginalDetectIntentRequest originalDetectIntentRequest;
 
     @JsonCreator
     public Request(
+            @JsonProperty("queryResult") QueryResult queryResult,
             @JsonProperty("originalDetectIntentRequest") OriginalDetectIntentRequest originalDetectIntentRequest) {
+        this.queryResult = queryResult;
         this.originalDetectIntentRequest = originalDetectIntentRequest;
     }
 

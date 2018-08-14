@@ -121,6 +121,40 @@ public class ScheduleManagerApplicationTests {
 			"   \"session\": \"projects/schedulemanager-5834a/agent/sessions/1534170630205\"\n" +
 			" }";
 
+	private String rawJson = "{\n" +
+			"  \"responseId\": \"2775ea47-e271-473b-b36a-bc630b41cb08\",\n" +
+			"  \"queryResult\": {\n" +
+			"    \"queryText\": \"do test\",\n" +
+			"    \"action\": \"TEST_EVENT\",\n" +
+			"    \"parameters\": {\n" +
+			"      \"test_name\": \"test\"\n" +
+			"    },\n" +
+			"    \"allRequiredParamsPresent\": true,\n" +
+			"    \"fulfillmentText\": \"Successful\",\n" +
+			"    \"fulfillmentMessages\": [\n" +
+			"      {\n" +
+			"        \"text\": {\n" +
+			"          \"text\": [\n" +
+			"            \"Successful\"\n" +
+			"          ]\n" +
+			"        }\n" +
+			"      }\n" +
+			"    ],\n" +
+			"    \"intent\": {\n" +
+			"      \"name\": \"projects/schedulemanager-5834a/agent/intents/4627920b-94bf-4fb8-894d-60c25aafee5e\",\n" +
+			"      \"displayName\": \"Do test\"\n" +
+			"    },\n" +
+			"    \"intentDetectionConfidence\": 1,\n" +
+			"    \"diagnosticInfo\": {\n" +
+			"      \"webhook_latency_ms\": 170\n" +
+			"    },\n" +
+			"    \"languageCode\": \"en\"\n" +
+			"  },\n" +
+			"  \"webhookStatus\": {\n" +
+			"    \"message\": \"Webhook execution successful\"\n" +
+			"  }\n" +
+			"}";
+
 	@Test
 	public void getController() throws Exception {
 		MvcResult test = mockMvc.perform(get("/").content("test")).andExpect(status().isOk()).andReturn();
@@ -145,6 +179,13 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void baseController() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json").content(baseRequest)).andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from post request {}", contentAsString);
+	}
+
+	@Test
+	public void rawJsonTest() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json").content(rawJson)).andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from post request {}", contentAsString);
 	}
