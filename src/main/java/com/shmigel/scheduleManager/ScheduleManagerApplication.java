@@ -18,7 +18,7 @@ public class ScheduleManagerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScheduleManagerApplication.class, args);
-		logger.info("Application started");
+//		logger.info("Application started");
 //		Calendar c = new Calendar();
 	}
 
