@@ -15,6 +15,8 @@ import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -143,7 +145,8 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void baseController() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json").content(baseRequest)).andExpect(status().isOk()).andReturn();
-		logger.info("Return from post request {}", result.getResponse().getContentAsString());
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from post request {}", contentAsString);
 	}
 
 }
