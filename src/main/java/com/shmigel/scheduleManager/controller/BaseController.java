@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class BaseController {
 
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ResponseEntity<?> testGetMethod(@RequestBody String text) {
+        return ResponseEntity.ok("It's working "+text);
+    }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<Response> baseController(@RequestBody String request) throws Exception {
-        Request r = new ObjectMapper().readValue(request, Request.class);
+    public ResponseEntity<Response> baseController(@RequestBody Request request) {
         return ResponseEntity.ok(Response.builder().fulfilmentText("Successful").build());
     }
 

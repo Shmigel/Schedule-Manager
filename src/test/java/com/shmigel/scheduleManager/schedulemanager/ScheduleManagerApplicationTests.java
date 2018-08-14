@@ -18,7 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -117,9 +120,10 @@ public class ScheduleManagerApplicationTests {
 			" }";
 
 	@Test
-	public void baseController() throws Exception {
-//		mockMvc.perform(post("/").content(baseRequest)).andExpect(status().isOk());
-//		Request request1 = new Request(
+	public void getController() throws Exception {
+		MvcResult test = mockMvc.perform(get("/").content("test")).andExpect(status().isOk()).andReturn();
+		logger.info("Return form get request: {}", test.getResponse().getContentAsString());
+		//		Request request1 = new Request(
 //				new OriginalDetectIntentRequest(
 //						new Payload(
 //								new User("123", "123", "123")
@@ -128,10 +132,18 @@ public class ScheduleManagerApplicationTests {
 //				);
 //		String s = new ObjectMapper().writeValueAsString(request1);
 //		logger.info("Make json: {}", s);
-//		Request request = new ObjectMapper().readValue(baseRequest, Request.class);
-//		logger.info("Get object: {}", request.toString());
-//		Request
-//		new ObjectMapper().writeValueAsString();
+	}
+
+	@Test
+	public void jsonMapping() throws IOException {
+		Request request = new ObjectMapper().readValue(baseRequest, Request.class);
+		logger.info("Get object: {}", request.toString());
+	}
+
+	@Test
+	public void baseController() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json").content(baseRequest)).andExpect(status().isOk()).andReturn();
+		logger.info("Return from post request {}", result.getResponse().getContentAsString());
 	}
 
 }
