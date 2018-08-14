@@ -118,7 +118,7 @@ public class ScheduleManagerApplicationTests {
 
 	@Test
 	public void baseController() throws Exception {
-		mockMvc.perform(post("/").content(baseRequest)).andExpect(status().isOk());
+//		mockMvc.perform(post("/").content(baseRequest)).andExpect(status().isOk());
 //		Request request1 = new Request(
 //				new OriginalDetectIntentRequest(
 //						new Payload(

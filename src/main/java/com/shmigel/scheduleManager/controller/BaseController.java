@@ -1,5 +1,6 @@
 package com.shmigel.scheduleManager.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shmigel.scheduleManager.model.dialogflow.Request;
 import com.shmigel.scheduleManager.model.dialogflow.Response;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class BaseController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<Response> baseController(@RequestBody Request request) {
+    public ResponseEntity<Response> baseController(@RequestBody String request) throws Exception {
+        Request r = new ObjectMapper().readValue(request, Request.class);
         return ResponseEntity.ok(Response.builder().fulfilmentText("Successful").build());
     }
 
