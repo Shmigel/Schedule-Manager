@@ -1,4 +1,2 @@
 rootProject.name = 'schedule-manager'
-include 'dialogflow-starter'
-include 'dependency-module'
 
