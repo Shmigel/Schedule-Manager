@@ -1,15 +1,16 @@
 package com.shmigel.scheduleManager;
 
+import com.shmigel.scheduleManager.config.DialogflowConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
+@Import(DialogflowConfig.class)
 @SpringBootApplication
 @Controller
 public class ScheduleManagerApplication {

@@ -125,7 +125,7 @@ public class ScheduleManagerApplicationTests {
 			"  \"responseId\": \"2775ea47-e271-473b-b36a-bc630b41cb08\",\n" +
 			"  \"queryResult\": {\n" +
 			"    \"queryText\": \"do test\",\n" +
-			"    \"action\": \"TEST_EVENT\",\n" +
+			"    \"action\": \"ADD_USER\",\n" +
 			"    \"parameters\": {\n" +
 			"      \"test_name\": \"test\"\n" +
 			"    },\n" +
@@ -178,7 +178,7 @@ public class ScheduleManagerApplicationTests {
 
 	@Test
 	public void baseController() throws Exception {
-		MvcResult result = mockMvc.perform(post("/").contentType("application/json").content(baseRequest)).andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json").content(rawJson)).andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from post request {}", contentAsString);
 	}

@@ -18,8 +18,6 @@ public class QueryResult {
 
     private Map<String, String> parameters = new HashMap<>();
 
-    private String fulfillmentText;
-
     public QueryResult() {
     }
 
@@ -27,11 +25,9 @@ public class QueryResult {
     public QueryResult(
             @JsonProperty("queryText") String queryText,
             @JsonProperty("action") String action,
-            @JsonProperty("parameters") Map<String, String> parameters,
-            @JsonProperty("fulfillmentText") String fulfillmentText) {
+            @JsonProperty("parameters") Map<String, String> parameters) {
         this.queryText = queryText;
         this.action = action;
         this.parameters = parameters;
-        this.fulfillmentText = fulfillmentText;
     }
 }

@@ -1,3 +1,6 @@
+group 'com.shmigel.calendar'
+version '0.0.1-SNAPSHOT'
+
 buildscript {
 	ext {
 		springBootVersion = '2.0.4.RELEASE'
@@ -40,4 +43,5 @@ dependencies {
 	runtime('com.h2database:h2')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile project(':dialogflow-starter')
 }

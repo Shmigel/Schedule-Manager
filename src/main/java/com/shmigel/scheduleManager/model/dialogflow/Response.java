@@ -7,6 +7,13 @@ import lombok.Data;
 @Data
 public class Response {
 
+    public Response(String fulfillmentText) {
+        this.fulfillmentText = fulfillmentText;
+    }
+
+    public Response() {
+    }
+
     private String fulfillmentText;
 
 }
