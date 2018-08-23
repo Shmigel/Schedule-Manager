@@ -3,34 +3,30 @@ package com.shmigel.scheduleManager;
 import com.shmigel.scheduleManager.config.DialogflowConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Import(DialogflowConfig.class)
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+
+//@Import(DialogflowConfig.class)
 @SpringBootApplication
 @Controller
 public class ScheduleManagerApplication {
+
+
 
 	private static final Logger logger = LoggerFactory.getLogger(ScheduleManagerApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScheduleManagerApplication.class, args);
-//		logger.info("Application started");
-//		Calendar c = new Calendar();
-	}
-
-//	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public ResponseEntity<?> commonPOSTResponse(@RequestBody String body) {
-//		System.out.println(body);
-		logger.info("Receive request with body: {}", body);
-		return ResponseEntity.ok().body(
-				"{\n" +
-				"  \"fulfillmentText\": \"This is a post response\"\n" +
-				"}");
 	}
 
 }

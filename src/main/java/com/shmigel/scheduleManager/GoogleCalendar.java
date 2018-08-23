@@ -1,25 +1,28 @@
 package com.shmigel.scheduleManager;
 
+import com.google.api.services.calendar.Calendar;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-@Scope("request")
+import java.io.IOException;
+
+@Service
+@Lazy
+//@Scope("prototype")
 public class GoogleCalendar {
 
-//    @Bean
-//    @Scope("request")
-//    Calendar calendar(NetHttpTransport httpTransport,
-//                      JacksonFactory jacksonFactory,
-//                      GoogleCredential credential) {
-//        return new Calendar(httpTransport, jacksonFactory, credential);
-//    }
+    @Lazy
+    @Autowired
+    Calendar calendar;
 
-//    @Bean
-//    @Scope("request")
-//    GoogleCredential googleCredential() {
-//        return new GoogleCredential().setFromTokenResponse(new TokenResponse().setAccessToken(authToken));
-//    }
+    public Calendar.CalendarList.List getCalendar() throws IOException {
+        return calendar.calendarList().list();
+    }
 
+    //    public Calendar.CalendarList.List getCalendarList() throws IOException {
+//        return calendar.calendarList().list();
+//    }
 
 }
