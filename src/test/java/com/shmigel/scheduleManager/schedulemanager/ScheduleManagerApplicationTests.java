@@ -64,17 +64,19 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
+	private String token = "KnhYhUAOxw-xh4UP694F9dlCL8Lg4C3m";
+
 	private Request getRequest(String action) {
 		return new Request(
 				new QueryResult(action, action, null),
-				new OriginalDetectIntentRequest(new Payload(new User("TIME", "TOKEN", "UK")))
+				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK")))
 		);
 	}
 
 	private Request getRequestWithParameters(String action, Map<String, String> parameters) {
 		return new Request(
 				new QueryResult(action, action , parameters),
-				new OriginalDetectIntentRequest(new Payload(new User("TIME", "TOKEN", "UK")))
+				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK")))
 		);
 	}
 

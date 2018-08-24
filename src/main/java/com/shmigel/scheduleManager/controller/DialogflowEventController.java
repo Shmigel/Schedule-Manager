@@ -1,6 +1,8 @@
 package com.shmigel.scheduleManager.controller;
 
-import com.google.api.services.calendar.Calendar;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.shmigel.scheduleManager.GoogleCalendar;
 import com.shmigel.scheduleManager.model.EventController;
 import com.shmigel.scheduleManager.model.EventMapping;
@@ -13,22 +15,29 @@ import java.util.Map;
 @EventController
 public class DialogflowEventController {
 
+//    @Lazy
     @Autowired
     private GoogleCalendar c;
 
     @EventMapping("TEST_EVENT")
     public Response testEvent() {
+//        c.createSchedule();
+//        c.getCalendars().forEach(i -> System.out.println(i.getId()+ " " +i.getSummary()));
         return new Response("Test is successful");
     }
 
     @EventMapping("ADD_EVENT")
     public Response addEvent(Map<String, String> parameters) {
+//        Event e = new Event()
+//                .setStart(new EventDateTime().setDateTime(new DateTime(parameters.get("date-time"))))
+//                .setSummary(parameters.get("event"));
+//        c.addEvent(e);
         return new Response("Event's scheduled");
     }
 
     @EventMapping("CREATE_SCHEDULE")
     public Response createSchedule() throws IOException {
-        System.out.println(c.getCalendar());
+        System.out.println(c.createSchedule());
         return new Response("Schedule's created");
     }
 

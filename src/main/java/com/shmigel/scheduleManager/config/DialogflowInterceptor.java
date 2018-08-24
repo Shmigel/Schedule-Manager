@@ -16,14 +16,10 @@ import java.util.stream.Collectors;
 
 public class DialogflowInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    private BeansConfiguration configuration;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Request dialogflowRequest = new ObjectMapper().readValue(body, Request.class);
-        configuration.setAuthToken(dialogflowRequest.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
+        System.out.println(body);
         return true;
     }
 }
