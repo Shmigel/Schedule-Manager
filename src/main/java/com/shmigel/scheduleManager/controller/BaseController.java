@@ -1,5 +1,6 @@
 package com.shmigel.scheduleManager.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.shmigel.scheduleManager.BeansConfiguration;
 import com.shmigel.scheduleManager.GoogleCalendar;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.IOException;
+
 @Controller
 public class BaseController {
 
@@ -35,12 +38,23 @@ public class BaseController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<Response> baseController(@RequestBody Request request) {
+    public ResponseEntity<Response> baseController(@RequestBody String body) {
+        Request request = getRequest(body);
         beansConfiguration.setAuthToken(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
-        logger.debug("Post request with body: {}", request);
+        logger.debug("Post request with body: {}", body);
         Response response = controllerInvoker.invokeProperMethod(request);
         logger.debug("Response: {}", response);
         return ResponseEntity.ok(response);
+    }
+
+    private Request getRequest(String body) {
+        Request r = null;
+         try {
+             r = new ObjectMapper().readValue(body, Request.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return r;
     }
 
 
