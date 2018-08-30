@@ -13,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -38,10 +40,10 @@ public class BaseController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<Response> baseController(@RequestBody String body) {
+    public ResponseEntity<Response> baseController(@RequestBody String body, @RequestHeader HttpHeaders headers) {
         Request request = getRequest(body);
         beansConfiguration.setAuthToken(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
-        logger.debug("Post request with body: {}", body);
+        logger.debug("Post request with headers: {}, and body: {}",headers, body);
         Response response = controllerInvoker.invokeProperMethod(request);
         logger.debug("Response: {}", response);
         return ResponseEntity.ok(response);

@@ -37,7 +37,7 @@ public class DialogflowEventController {
 
     @EventMapping("CREATE_SCHEDULE")
     public Response createSchedule() throws IOException {
-        System.out.println(c.createSchedule());
+        System.out.println(c.getCalendars());
         return new Response("Schedule's created");
     }
 

@@ -29,7 +29,7 @@ public class GoogleCalendar {
     @Autowired
     Calendar calendar;
 
-    private List<CalendarListEntry> getCalendars() {
+    public List<CalendarListEntry> getCalendars() {
         List<CalendarListEntry> items = null;
         try {
             items = calendar.calendarList().list().execute().getItems();
