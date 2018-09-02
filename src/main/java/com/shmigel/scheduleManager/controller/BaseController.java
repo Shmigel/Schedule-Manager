@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 public class BaseController {
@@ -41,9 +42,10 @@ public class BaseController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<Response> baseController(@RequestBody String body, @RequestHeader HttpHeaders headers) {
-        Request request = getRequest(body);
-        beansConfiguration.setAuthToken(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
         logger.debug("Post request with headers: {}, and body: {}",headers, body);
+        Request request = getRequest(body);
+        Optional<String> accessToken = Optional.ofNullable(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
+        beansConfiguration.setAuthToken(accessToken.orElseThrow(RuntimeException::new));
         Response response = controllerInvoker.invokeProperMethod(request);
         logger.debug("Response: {}", response);
         return ResponseEntity.ok(response);

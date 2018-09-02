@@ -35,25 +35,34 @@ public class ScheduleManagerApplicationTests {
 	private MockMvc mockMvc;
 
 	private static String prepareJson = "{\n" +
-			"   \"responseId\": \"fc14bdd4-6468-474c-a4e4-4620ca8f09f6\",\n" +
-			"   \"queryResult\": {\n" +
-			"     \"queryText\": \"do test\",\n" +
-			"     \"action\": \"TYPE_OF_ACTION\",\n" +
-			"     \"parameters\": {\n" +
-			"         \"PARAMETER_NAME\": \"PARAMETER_VALUE\"\n" +
-			"     }\n" +
-			"   },\n" +
-			"   \"originalDetectIntentRequest\": {\n" +
-			"     \"payload\": {\n" +
-			"       \"user\": {\n" +
-			"         \"lastSeen\": \"2018-08-13T14:28:37Z\",\n" +
-			"         \"accessToken\": \"someToken\",\n" +
-			"         \"locale\": \"en-US\",\n" +
-			"         \"userId\": \"someId\"\n" +
-			"       }\n" +
-			"     }\n" +
-			"   }\n" +
-			" }";
+			"  \"responseId\": \"b0e90e8a-344e-43bc-a5b7-e81e47731d68\",\n" +
+			"  \"queryResult\": {\n" +
+			"    \"queryText\": \"do test\",\n" +
+			"    \"action\": \"TEST_EVENT\",\n" +
+			"    \"parameters\": {},\n" +
+			"    \"allRequiredParamsPresent\": true,\n" +
+			"    \"fulfillmentMessages\": [\n" +
+			"      {\n" +
+			"        \"text\": {\n" +
+			"          \"text\": [\n" +
+			"            \"\"\n" +
+			"          ]\n" +
+			"        }\n" +
+			"      }\n" +
+			"    ],\n" +
+			"    \"intent\": {\n" +
+			"      \"name\": \"projects/schedule-manager-a6180/agent/intents/02c8eae7-46f7-45f9-ab4d-d8c9e5204243\",\n" +
+			"      \"displayName\": \"Test\"\n" +
+			"    },\n" +
+			"    \"intentDetectionConfidence\": 1,\n" +
+			"    \"languageCode\": \"en\"\n" +
+			"  },\n" +
+			"  \"originalDetectIntentRequest\": {\n" +
+			"    \"payload\": {}\n" +
+			"  },\n" +
+			"  \"session\": \"projects/schedule-manager-a6180/agent/sessions/8db5ea0d-f5c9-acf2-ee17-f6067f29dbb6\"\n" +
+			"}";
+
 	private String jsonOf(Object o) {
 		String json = "";
 		try {
@@ -64,16 +73,16 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "sbpnbDgJk8gMKekHw5FLXYFrBCqCrXeQ";
+	private String token = "34nQgQ0MImszXal3D6rwv8fzZu0fj89f";
 
-	private Request getRequest(String action) {
+	private Request request(String action) {
 		return new Request(
 				new QueryResult(action, action, null),
 				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK")))
 		);
 	}
 
-	private Request getRequestWithParameters(String action, Map<String, String> parameters) {
+	private Request requestWithParameters(String action, Map<String, String> parameters) {
 		return new Request(
 				new QueryResult(action, action , parameters),
 				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK")))
@@ -104,7 +113,7 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void baseController() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(getRequest("CREATE_SCHEDULE"))))
+				.content(jsonOf(request("CREATE_SCHEDULE"))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from post request {}", contentAsString);
@@ -113,7 +122,7 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void rawJsonTest() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(getRequestWithParameters("ADD_USER", Collections.singletonMap("EMAIL", "sh@mail.com")))))
+				.content(jsonOf(requestWithParameters("ADD_USER", Collections.singletonMap("EMAIL", "sh@mail.com")))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from post request {}", contentAsString);
