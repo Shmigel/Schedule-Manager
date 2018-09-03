@@ -6,14 +6,11 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.Calendar;
-import com.shmigel.scheduleManager.model.dialogflow.Request;
-import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -24,6 +21,9 @@ public class BeansConfiguration {
     private String authToken = "";
 
     private static Logger logger = LoggerFactory.getLogger(BeansConfiguration.class);
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     public void setAuthToken(String authToken) {
         logger.debug("New authToken: {}",authToken);

@@ -23,6 +23,16 @@ public class DialogflowEventControllerListener implements ApplicationListener<Co
 
     private Set<MethodWrapper> methodWrappers = new HashSet<>();
 
+    /**
+     * Register methods that might process dialogflow request
+     *
+     * Methods should be annotated {@link EventMapping}
+     * and locate in classes annotated {@link EventController}
+     *
+     * Each proper method saving in methodWrappers
+     *
+     * @param event
+     */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         ApplicationContext context = event.getApplicationContext();

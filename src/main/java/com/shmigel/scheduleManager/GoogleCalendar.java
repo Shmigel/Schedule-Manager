@@ -79,18 +79,6 @@ public class GoogleCalendar {
 
     public String createSchedule() {
         return isCalendarPresent();
-//        if                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     (!isCalendarPresent()) {
-//            createCalendar(new CalendarListEntry().setSummary(defaultCalendarName));
-//        }
     }
-
-//    public Integer getCalendar
-
-//    private Calendar calendar() {
-//    }
-
-    //    public Calendar.CalendarList.List getCalendarList() throws IOException {
-//        return calendar.calendarList().list();
-//    }
 
 }

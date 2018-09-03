@@ -23,7 +23,7 @@ public class DialogflowEventControllerInvoker {
     private Set<MethodWrapper> methodWrappers;
 
     /**
-     * Try to find method to execute given request by comparing methods' annotation and request action parameter.
+     * Try to find method to process given request by comparing methods' annotation and request action parameter.
      *
      * If method has one parameter, he's suggesting that it's parameters of the request,
      * and send requests' parameters as argue,

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 
-//@Import(DialogflowConfig.class)
 @SpringBootApplication
 @Controller
 public class ScheduleManagerApplication {

@@ -8,6 +8,7 @@ import com.shmigel.scheduleManager.model.EventController;
 import com.shmigel.scheduleManager.model.EventMapping;
 import com.shmigel.scheduleManager.model.dialogflow.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import java.io.IOException;
 import java.util.Map;
@@ -15,23 +16,18 @@ import java.util.Map;
 @EventController
 public class DialogflowEventController {
 
-//    @Lazy
+    @Lazy
     @Autowired
     private GoogleCalendar c;
 
     @EventMapping("TEST_EVENT")
     public Response testEvent() {
-//        c.createSchedule();
-//        c.getCalendars().forEach(i -> System.out.println(i.getId()+ " " +i.getSummary()));
+
         return new Response("Test is successful");
     }
 
     @EventMapping("ADD_EVENT")
     public Response addEvent(Map<String, String> parameters) {
-//        Event e = new Event()
-//                .setStart(new EventDateTime().setDateTime(new DateTime(parameters.get("date-time"))))
-//                .setSummary(parameters.get("event"));
-//        c.addEvent(e);
         return new Response("Event's scheduled");
     }
 
