@@ -1,12 +1,9 @@
 package com.shmigel.scheduleManager.controller;
 
-import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
-import com.shmigel.scheduleManager.GoogleCalendar;
-import com.shmigel.scheduleManager.model.EventController;
-import com.shmigel.scheduleManager.model.EventMapping;
-import com.shmigel.scheduleManager.model.dialogflow.Response;
+import com.shmigel.scheduleManager.service.CalendarService;
+import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
+import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
+import com.shmigel.scheduleManager.dialogflow.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
@@ -18,12 +15,12 @@ public class DialogflowEventController {
 
     @Lazy
     @Autowired
-    private GoogleCalendar c;
+    private CalendarService calendar;
 
     @EventMapping("TEST_EVENT")
     public Response testEvent() {
 
-        return new Response("Test is successful");
+        return new Response("OnResponse is successful");
     }
 
     @EventMapping("ADD_EVENT")
@@ -33,7 +30,7 @@ public class DialogflowEventController {
 
     @EventMapping("CREATE_SCHEDULE")
     public Response createSchedule() throws IOException {
-        System.out.println(c.getCalendars());
+        System.out.println(calendar.getCalendars());
         return new Response("Schedule's created");
     }
 

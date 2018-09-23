@@ -1,14 +1,14 @@
-package com.shmigel.scheduleManager.model;
+package com.shmigel.scheduleManager.dialogflow.model.annotation;
+
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
+@Component
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EventMapping {
-
-    String value() default "WELCOME_EVENT";
-
+public @interface EventController {
 }

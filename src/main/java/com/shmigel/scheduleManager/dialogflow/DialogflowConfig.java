@@ -1,4 +1,4 @@
-package com.shmigel.scheduleManager.config;
+package com.shmigel.scheduleManager.dialogflow;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

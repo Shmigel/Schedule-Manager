@@ -1,7 +1,7 @@
-package com.shmigel.scheduleManager.config;
+package com.shmigel.scheduleManager.dialogflow;
 
-import com.shmigel.scheduleManager.model.EventController;
-import com.shmigel.scheduleManager.model.EventMapping;
+import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
+import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

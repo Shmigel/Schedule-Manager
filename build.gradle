@@ -39,6 +39,13 @@ dependencies {
 	compile ('com.google.oauth-client:google-oauth-client-jetty:1.23.0')
 	compile ('com.google.apis:google-api-services-calendar:v3-rev305-1.23.0')
 
+//	compile 'org.json:json:20180813'
+//	compile 'com.squareup.okhttp3:okhttp:3.11.0'
+	compile 'com.mashape.unirest:unirest-java:1.4.9'
+	compile 'org.apache.httpcomponents:httpclient:4.3.6'
+	compile 'org.apache.httpcomponents:httpasyncclient:4.0.2'
+	compile 'org.apache.httpcomponents:httpmime:4.3.6'
+
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('com.h2database:h2')
 	compileOnly('org.projectlombok:lombok')

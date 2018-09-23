@@ -1,7 +1,7 @@
-package com.shmigel.scheduleManager.config;
+package com.shmigel.scheduleManager.dialogflow;
 
-import com.shmigel.scheduleManager.model.dialogflow.Request;
-import com.shmigel.scheduleManager.model.dialogflow.Response;
+import com.shmigel.scheduleManager.dialogflow.model.Request;
+import com.shmigel.scheduleManager.dialogflow.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;

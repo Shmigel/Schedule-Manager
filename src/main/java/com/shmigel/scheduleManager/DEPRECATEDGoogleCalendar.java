@@ -1,31 +1,26 @@
 package com.shmigel.scheduleManager;
 
-import com.google.api.client.json.GenericJson;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
-@Service
-@Lazy
-public class GoogleCalendar {
+//@Service
+//@Lazy
+public class DEPRECATEDGoogleCalendar {
 
-    private static Logger logger = LoggerFactory.getLogger(GoogleCalendar.class);
+    private static Logger logger = LoggerFactory.getLogger(DEPRECATEDGoogleCalendar.class);
 
     private static String defaultCalendarName = "ScheduleManagers' Calendar";
 
-    @Lazy
     @Autowired
     Calendar calendar;
 

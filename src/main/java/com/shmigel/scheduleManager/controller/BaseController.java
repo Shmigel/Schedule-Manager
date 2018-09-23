@@ -1,18 +1,13 @@
 package com.shmigel.scheduleManager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.shmigel.scheduleManager.BeansConfiguration;
-import com.shmigel.scheduleManager.GoogleCalendar;
-import com.shmigel.scheduleManager.config.DialogflowEventControllerInvoker;
-import com.shmigel.scheduleManager.model.dialogflow.Request;
-import com.shmigel.scheduleManager.model.dialogflow.Response;
-import lombok.Setter;
+import com.shmigel.scheduleManager.config.GoogleBeanConfiguration;
+import com.shmigel.scheduleManager.dialogflow.DialogflowEventControllerInvoker;
+import com.shmigel.scheduleManager.dialogflow.model.Request;
+import com.shmigel.scheduleManager.dialogflow.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,7 +28,7 @@ public class BaseController {
     private DialogflowEventControllerInvoker controllerInvoker;
 
     @Autowired
-    private BeansConfiguration beansConfiguration;
+    private GoogleBeanConfiguration configuration;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<?> testGetMethod() {
@@ -42,13 +37,17 @@ public class BaseController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<Response> baseController(@RequestBody String body, @RequestHeader HttpHeaders headers) {
-        logger.debug("Post request with headers: {}, and body: {}",headers, body);
+        logger.debug("Post request with headers: {}, and body: {}", headers, body);
         Request request = getRequest(body);
-        Optional<String> accessToken = Optional.ofNullable(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
-        beansConfiguration.setAuthToken(accessToken.orElseThrow(RuntimeException::new));
+        setAccessToken(request);
         Response response = controllerInvoker.invokeProperMethod(request);
         logger.debug("Response: {}", response);
         return ResponseEntity.ok(response);
+    }
+
+    private void setAccessToken(Request request) {
+        Optional<String> accessToken = Optional.ofNullable(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
+        configuration.setAuth0Token(accessToken.orElseThrow(RuntimeException::new));
     }
 
     private Request getRequest(String body) {
