@@ -39,15 +39,11 @@ public class BaseController {
     public ResponseEntity<Response> baseController(@RequestBody String body, @RequestHeader HttpHeaders headers) {
         logger.debug("Post request with headers: {}, and body: {}", headers, body);
         Request request = getRequest(body);
-        setAccessToken(request);
+        Optional<String> accessToken = Optional.ofNullable(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
+        configuration.setAuth0Token(accessToken.orElseThrow(RuntimeException::new));
         Response response = controllerInvoker.invokeProperMethod(request);
         logger.debug("Response: {}", response);
         return ResponseEntity.ok(response);
-    }
-
-    private void setAccessToken(Request request) {
-        Optional<String> accessToken = Optional.ofNullable(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
-        configuration.setAuth0Token(accessToken.orElseThrow(RuntimeException::new));
     }
 
     private Request getRequest(String body) {

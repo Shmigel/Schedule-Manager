@@ -17,11 +17,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class Auth0TokenService {
 
-    /**
-     * Access token for auth0 account manager
-     */
-    private final String auth0ManagerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ik1ERTVOa0pDUlRJMU1qQkJSak5FTUVGR1JqQTRORU16TnpWR016a3hNemcxTVRFM01UWTJNQSJ9.eyJpc3MiOiJodHRwczovL3NjaGVkdWxlLW1hbmFnZXIuZXUuYXV0aDAuY29tLyIsInN1YiI6IjByQUo0RXpBSkFLT2hUYlE1UjYzRU1iZDZvUmZ4eU8xQGNsaWVudHMiLCJhdWQiOiJodHRwczovL3NjaGVkdWxlLW1hbmFnZXIuZXUuYXV0aDAuY29tL2FwaS92Mi8iLCJpYXQiOjE1Mzc3MDM5NDYsImV4cCI6MTUzNzc5MDM0NiwiYXpwIjoiMHJBSjRFekFKQUtPaFRiUTVSNjNFTWJkNm9SZnh5TzEiLCJzY29wZSI6InJlYWQ6dXNlcnMgcmVhZDp1c2VyX2lkcF90b2tlbnMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.QwkTAwAxjM-RqOJNR9i-kpCLIYKXOes12yBUIQEQEL0JZThlYUwj1AidZCCP-us5s3vjAw97G4dv-ACKYnN20AHQYYRX1MCzuvvSaC5Wd0JOzdh-XVaUDlP1lSKXI3KQR2v_bSvXo8Xbdi2YthNZMIIFsjf8tadcDlc51bzvmCO1o0nqRJsrhbeetOgPmbVSNF5r-BRgLYy0T8G_W4SI3nxU2CAmT23JI3hgDNFa61C0DFxCW2L8TiUhdiOouAvRa5GVi3g5WGqaZClhfVnNtqF0jl7ngTmKCY9qv1FmJvXaplj8jAsPOuCGfqEibWNCCSAqQjw-o9FqLKPbR11Cmw";
-
     private static Logger logger = LoggerFactory.getLogger(Auth0TokenService.class);
 
     private String getUserId(String auth0Token) throws UnirestException {
@@ -30,7 +25,21 @@ public class Auth0TokenService {
         return userInfoResponse.getBody().getObject().get("sub").toString();
     }
 
-    private String getAccessToken(String userId) throws UnirestException {
+    private String getAuth0ManagerToken() throws UnirestException {
+        String preparedBody = "{\n" +
+                "\t\"grant_type\":\"client_credentials\",\n" +
+                "\t\"client_id\": \"0rAJ4EzAJAKOhTbQ5R63EMbd6oRfxyO1\",\n" +
+                "\t\"client_secret\": \"p_5XX3nmrXlBkZ9X084vQjkvy6ztg7xibg__TX1jRoZoG3upJGCKhfI29jF39zf8\",\n" +
+                "\t\"audience\": \"https://schedule-manager.eu.auth0.com/api/v2/\"\n" +
+                "}";
+        HttpResponse<JsonNode> auth0ManagerTokenResponse = Unirest.post("https://schedule-manager.eu.auth0.com/oauth/token")
+                .header("Content-Type", "application/json")
+                .body(preparedBody)
+                .asJson();
+        return auth0ManagerTokenResponse.getBody().getObject().get("access_token").toString();
+    }
+
+    private String getAccessToken(String userId, String auth0ManagerToken) throws UnirestException {
         HttpResponse<JsonNode> accessTokenResonse = Unirest.get("https://schedule-manager.eu.auth0.com/api/v2/users/" + userId)
                 .header("Authorization", "Bearer " + auth0ManagerToken).asJson();
         return accessTokenResonse.getBody().getObject()
@@ -41,7 +50,8 @@ public class Auth0TokenService {
         String accessToken = null;
         try {
             String userId = getUserId(userToken);
-            accessToken = getAccessToken(userId);
+            String auth0ManagerToken = getAuth0ManagerToken();
+            accessToken = getAccessToken(userId, auth0ManagerToken);
             logger.info("userId:"+userId+" token:"+accessToken);
         } catch (UnirestException e) {
             e.printStackTrace();

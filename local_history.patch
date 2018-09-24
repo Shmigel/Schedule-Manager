@@ -1,0 +1,1840 @@
+Index: src/main/java/com/shmigel/scheduleManager/model/dialogflow/User.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/model/dialogflow/User.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/model/dialogflow/User.java	(date 0)
+@@ -1,30 +0,0 @@
+-package com.shmigel.scheduleManager.model.dialogflow;
+-
+-import com.fasterxml.jackson.annotation.JsonCreator;
+-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+-import com.fasterxml.jackson.annotation.JsonProperty;
+-import lombok.Data;
+-
+-@Data
+-@JsonIgnoreProperties(ignoreUnknown = true)
+-public class User {
+-
+-    private String lastSeen;
+-
+-    private String accessToken;
+-
+-    private String locale;
+-
+-    @JsonCreator
+-    public User(
+-            @JsonProperty("lastSeen") String lastSeen,
+-            @JsonProperty("accessToken") String accessToken,
+-            @JsonProperty("locale") String locale) {
+-        this.lastSeen = lastSeen;
+-        this.accessToken = accessToken;
+-        this.locale = locale;
+-    }
+-
+-    public User() {
+-    }
+-}
+Index: src/main/java/com/shmigel/scheduleManager/model/dialogflow/Response.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/model/dialogflow/Response.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/model/dialogflow/Response.java	(date 0)
+@@ -1,29 +0,0 @@
+-package com.shmigel.scheduleManager.model.dialogflow;
+-
+-import lombok.Builder;
+-import lombok.Data;
+-
+-import java.lang.reflect.Array;
+-import java.util.ArrayList;
+-import java.util.Arrays;
+-import java.util.Collections;
+-import java.util.List;
+-
+-@Builder
+-@Data
+-public class Response {
+-
+-    public Response(String fulfillmentText) {
+-        this.fulfillmentText = fulfillmentText;
+-    }
+-
+-    public static Response getUnknownAnswer() {
+-        return new Response("I don't understand you. Please try again");
+-    }
+-
+-    public Response() {
+-    }
+-
+-    private String fulfillmentText;
+-
+-}
+Index: src/main/java/com/shmigel/scheduleManager/model/dialogflow/Request.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/model/dialogflow/Request.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/model/dialogflow/Request.java	(date 0)
+@@ -1,28 +0,0 @@
+-package com.shmigel.scheduleManager.model.dialogflow;
+-
+-import com.fasterxml.jackson.annotation.JsonCreator;
+-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+-import com.fasterxml.jackson.annotation.JsonProperty;
+-import lombok.AllArgsConstructor;
+-import lombok.Data;
+-
+-@Data
+-
+-@JsonIgnoreProperties(ignoreUnknown = true)
+-public class Request {
+-
+-    private QueryResult queryResult;
+-
+-    private OriginalDetectIntentRequest originalDetectIntentRequest;
+-
+-    @JsonCreator
+-    public Request(
+-            @JsonProperty("queryResult") QueryResult queryResult,
+-            @JsonProperty("originalDetectIntentRequest") OriginalDetectIntentRequest originalDetectIntentRequest) {
+-        this.queryResult = queryResult;
+-        this.originalDetectIntentRequest = originalDetectIntentRequest;
+-    }
+-
+-    public Request() {
+-    }
+-}
+Index: src/main/java/com/shmigel/scheduleManager/model/dialogflow/QueryResult.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/model/dialogflow/QueryResult.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/model/dialogflow/QueryResult.java	(date 0)
+@@ -1,33 +0,0 @@
+-package com.shmigel.scheduleManager.model.dialogflow;
+-
+-import com.fasterxml.jackson.annotation.JsonCreator;
+-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+-import com.fasterxml.jackson.annotation.JsonProperty;
+-import lombok.Data;
+-
+-import java.util.HashMap;
+-import java.util.Map;
+-
+-@Data
+-@JsonIgnoreProperties(ignoreUnknown = true)
+-public class QueryResult {
+-
+-    private String queryText;
+-
+-    private String action;
+-
+-    private Map<String, String> parameters = new HashMap<>();
+-
+-    public QueryResult() {
+-    }
+-
+-    @JsonCreator
+-    public QueryResult(
+-            @JsonProperty("queryText") String queryText,
+-            @JsonProperty("action") String action,
+-            @JsonProperty("parameters") Map<String, String> parameters) {
+-        this.queryText = queryText;
+-        this.action = action;
+-        this.parameters = parameters;
+-    }
+-}
+Index: src/main/java/com/shmigel/scheduleManager/model/dialogflow/Payload.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/model/dialogflow/Payload.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/model/dialogflow/Payload.java	(date 0)
+@@ -1,23 +0,0 @@
+-package com.shmigel.scheduleManager.model.dialogflow;
+-
+-import com.fasterxml.jackson.annotation.JsonCreator;
+-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+-import com.fasterxml.jackson.annotation.JsonProperty;
+-import lombok.AllArgsConstructor;
+-import lombok.Data;
+-
+-@Data
+-@JsonIgnoreProperties(ignoreUnknown = true)
+-public class Payload {
+-
+-    private User user;
+-
+-    @JsonCreator
+-    public Payload(
+-            @JsonProperty("user") User user) {
+-        this.user = user;
+-    }
+-
+-    public Payload() {
+-    }
+-}
+Index: src/main/java/com/shmigel/scheduleManager/model/dialogflow/OriginalDetectIntentRequest.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/model/dialogflow/OriginalDetectIntentRequest.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/model/dialogflow/OriginalDetectIntentRequest.java	(date 0)
+@@ -1,23 +0,0 @@
+-package com.shmigel.scheduleManager.model.dialogflow;
+-
+-import com.fasterxml.jackson.annotation.JsonCreator;
+-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+-import com.fasterxml.jackson.annotation.JsonProperty;
+-import lombok.AllArgsConstructor;
+-import lombok.Data;
+-
+-@Data
+-@JsonIgnoreProperties(ignoreUnknown = true)
+-public class OriginalDetectIntentRequest {
+-
+-    private Payload payload;
+-
+-    @JsonCreator
+-    public OriginalDetectIntentRequest(
+-            @JsonProperty("payload") Payload payload) {
+-        this.payload = payload;
+-    }
+-
+-    public OriginalDetectIntentRequest() {
+-    }
+-}
+Index: src/main/java/com/shmigel/scheduleManager/model/EventController.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/model/EventController.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/model/EventController.java	(date 0)
+@@ -1,14 +0,0 @@
+-package com.shmigel.scheduleManager.model;
+-
+-import org.springframework.stereotype.Component;
+-
+-import java.lang.annotation.ElementType;
+-import java.lang.annotation.Retention;
+-import java.lang.annotation.RetentionPolicy;
+-import java.lang.annotation.Target;
+-
+-@Component
+-@Target(ElementType.TYPE)
+-@Retention(RetentionPolicy.RUNTIME)
+-public @interface EventController {
+-}
+Index: src/main/java/com/shmigel/scheduleManager/model/EventMapping.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/model/EventMapping.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/model/EventMapping.java	(date 0)
+@@ -1,14 +0,0 @@
+-package com.shmigel.scheduleManager.model;
+-
+-import java.lang.annotation.ElementType;
+-import java.lang.annotation.Retention;
+-import java.lang.annotation.RetentionPolicy;
+-import java.lang.annotation.Target;
+-
+-@Target(ElementType.METHOD)
+-@Retention(RetentionPolicy.RUNTIME)
+-public @interface EventMapping {
+-
+-    String value() default "WELCOME_EVENT";
+-
+-}
+Index: src/main/java/com/shmigel/scheduleManager/service/CalendarService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/service/CalendarService.java	(date 1537814842000)
++++ src/main/java/com/shmigel/scheduleManager/service/CalendarService.java	(date 1537814842000)
+@@ -0,0 +1,66 @@
++package com.shmigel.scheduleManager.service;
++
++import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
++import com.google.api.client.http.javanet.NetHttpTransport;
++import com.google.api.client.json.jackson2.JacksonFactory;
++import com.google.api.client.util.DateTime;
++import com.google.api.services.calendar.Calendar;
++import com.google.api.services.calendar.model.CalendarListEntry;
++import com.google.api.services.calendar.model.Event;
++import com.google.api.services.calendar.model.Events;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++
++import java.io.IOException;
++import java.util.List;
++
++import static java.util.stream.Collectors.toList;
++
++public class CalendarService {
++
++    private Calendar calendar;
++
++    private Logger logger = LoggerFactory.getLogger(CalendarService.class);
++
++    private static String defaultCalendarName = "ScheduleManagers' Calendar";
++
++    public CalendarService(JacksonFactory jacksonFactory,
++                           NetHttpTransport httpTransport, GoogleCredential googleCredential) {
++        calendar = new Calendar(httpTransport, jacksonFactory, googleCredential);
++    }
++
++    public void getCalendar() {
++        DateTime now = new DateTime(System.currentTimeMillis());
++        Events events = null;
++        try {
++            events = calendar.events().list("primary")
++                    .setMaxResults(10)
++                    .setTimeMin(now)
++                    .setOrderBy("startTime")
++                    .setSingleEvents(true)
++                    .execute();
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++        List<Event> items = events.getItems();
++        if (items.isEmpty()) {
++            System.out.println("No upcoming events found.");
++        } else {
++            System.out.println("Upcoming events");
++            for (Event event : items) {
++                DateTime start = event.getStart().getDateTime();
++                if (start == null) {
++                    start = event.getStart().getDate();
++                }
++                System.out.printf("%s (%s)\n", event.getSummary(), start);
++            }
++        }
++    }
++
++
++
++    private String  toPrettyString(CalendarListEntry entry) {
++        return entry.getId() +" "+ entry.getSummary() +"\n";
++    }
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/service/Auth0TokenService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/service/Auth0TokenService.java	(date 1537814244000)
++++ src/main/java/com/shmigel/scheduleManager/service/Auth0TokenService.java	(date 1537814244000)
+@@ -0,0 +1,62 @@
++package com.shmigel.scheduleManager.service;
++
++import com.mashape.unirest.http.HttpResponse;
++import com.mashape.unirest.http.JsonNode;
++import com.mashape.unirest.http.Unirest;
++import com.mashape.unirest.http.exceptions.UnirestException;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.stereotype.Service;
++
++/**
++ * Since request from dialogflow gives auth0 access token instead of google access token,
++ * we need to perform few additional request to get relevant access token
++ * witch we will use to access to google calendar api
++ */
++
++@Service
++public class Auth0TokenService {
++
++    private static Logger logger = LoggerFactory.getLogger(Auth0TokenService.class);
++
++    private String getUserId(String auth0Token) throws UnirestException {
++        HttpResponse<JsonNode> userInfoResponse = Unirest.get("https://schedule-manager.eu.auth0.com/userinfo")
++                .header("Authorization", "Bearer " + auth0Token).asJson();
++        return userInfoResponse.getBody().getObject().get("sub").toString();
++    }
++
++    private String getAuth0ManagerToken() throws UnirestException {
++        String preparedBody = "{\n" +
++                "\t\"grant_type\":\"client_credentials\",\n" +
++                "\t\"client_id\": \"0rAJ4EzAJAKOhTbQ5R63EMbd6oRfxyO1\",\n" +
++                "\t\"client_secret\": \"p_5XX3nmrXlBkZ9X084vQjkvy6ztg7xibg__TX1jRoZoG3upJGCKhfI29jF39zf8\",\n" +
++                "\t\"audience\": \"https://schedule-manager.eu.auth0.com/api/v2/\"\n" +
++                "}";
++        HttpResponse<JsonNode> auth0ManagerTokenResponse = Unirest.post("https://schedule-manager.eu.auth0.com/oauth/token")
++                .header("Content-Type", "application/json")
++                .body(preparedBody)
++                .asJson();
++        return auth0ManagerTokenResponse.getBody().getObject().get("access_token").toString();
++    }
++
++    private String getAccessToken(String userId, String auth0ManagerToken) throws UnirestException {
++        HttpResponse<JsonNode> accessTokenResonse = Unirest.get("https://schedule-manager.eu.auth0.com/api/v2/users/" + userId)
++                .header("Authorization", "Bearer " + auth0ManagerToken).asJson();
++        return accessTokenResonse.getBody().getObject()
++                .getJSONArray("identities").getJSONObject(0).get("access_token").toString();
++    }
++
++    public String load(String userToken) {
++        String accessToken = null;
++        try {
++            String userId = getUserId(userToken);
++            String auth0ManagerToken = getAuth0ManagerToken();
++            accessToken = getAccessToken(userId, auth0ManagerToken);
++            logger.info("userId:"+userId+" token:"+accessToken);
++        } catch (UnirestException e) {
++            e.printStackTrace();
++        }
++        return accessToken;
++    }
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/model/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/model/User.java	(date 1537706186000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/model/User.java	(date 1537706186000)
+@@ -0,0 +1,30 @@
++package com.shmigel.scheduleManager.dialogflow.model;
++
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import lombok.Data;
++
++@Data
++@JsonIgnoreProperties(ignoreUnknown = true)
++public class User {
++
++    private String lastSeen;
++
++    private String accessToken;
++
++    private String locale;
++
++    @JsonCreator
++    public User(
++            @JsonProperty("lastSeen") String lastSeen,
++            @JsonProperty("accessToken") String accessToken,
++            @JsonProperty("locale") String locale) {
++        this.lastSeen = lastSeen;
++        this.accessToken = accessToken;
++        this.locale = locale;
++    }
++
++    public User() {
++    }
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/model/annotation/EventMapping.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/model/annotation/EventMapping.java	(date 1537706186000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/model/annotation/EventMapping.java	(date 1537706186000)
+@@ -0,0 +1,14 @@
++package com.shmigel.scheduleManager.dialogflow.model.annotation;
++
++import java.lang.annotation.ElementType;
++import java.lang.annotation.Retention;
++import java.lang.annotation.RetentionPolicy;
++import java.lang.annotation.Target;
++
++@Target(ElementType.METHOD)
++@Retention(RetentionPolicy.RUNTIME)
++public @interface EventMapping {
++
++    String value() default "WELCOME_EVENT";
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/model/annotation/EventController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/model/annotation/EventController.java	(date 1537706186000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/model/annotation/EventController.java	(date 1537706186000)
+@@ -0,0 +1,14 @@
++package com.shmigel.scheduleManager.dialogflow.model.annotation;
++
++import org.springframework.stereotype.Component;
++
++import java.lang.annotation.ElementType;
++import java.lang.annotation.Retention;
++import java.lang.annotation.RetentionPolicy;
++import java.lang.annotation.Target;
++
++@Component
++@Target(ElementType.TYPE)
++@Retention(RetentionPolicy.RUNTIME)
++public @interface EventController {
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/model/Payload.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/model/Payload.java	(date 1537706186000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/model/Payload.java	(date 1537706186000)
+@@ -0,0 +1,22 @@
++package com.shmigel.scheduleManager.dialogflow.model;
++
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import lombok.Data;
++
++@Data
++@JsonIgnoreProperties(ignoreUnknown = true)
++public class Payload {
++
++    private User user;
++
++    @JsonCreator
++    public Payload(
++            @JsonProperty("user") User user) {
++        this.user = user;
++    }
++
++    public Payload() {
++    }
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/model/Request.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/model/Request.java	(date 1537706186000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/model/Request.java	(date 1537706186000)
+@@ -0,0 +1,27 @@
++package com.shmigel.scheduleManager.dialogflow.model;
++
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import lombok.Data;
++
++@Data
++
++@JsonIgnoreProperties(ignoreUnknown = true)
++public class Request {
++
++    private QueryResult queryResult;
++
++    private OriginalDetectIntentRequest originalDetectIntentRequest;
++
++    @JsonCreator
++    public Request(
++            @JsonProperty("queryResult") QueryResult queryResult,
++            @JsonProperty("originalDetectIntentRequest") OriginalDetectIntentRequest originalDetectIntentRequest) {
++        this.queryResult = queryResult;
++        this.originalDetectIntentRequest = originalDetectIntentRequest;
++    }
++
++    public Request() {
++    }
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/model/Response.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/model/Response.java	(date 1537706186000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/model/Response.java	(date 1537706186000)
+@@ -0,0 +1,23 @@
++package com.shmigel.scheduleManager.dialogflow.model;
++
++import lombok.Builder;
++import lombok.Data;
++
++@Builder
++@Data
++public class Response {
++
++    public Response(String fulfillmentText) {
++        this.fulfillmentText = fulfillmentText;
++    }
++
++    public static Response getUnknownAnswer() {
++        return new Response("I don't understand you. Please try again");
++    }
++
++    public Response() {
++    }
++
++    private String fulfillmentText;
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/model/QueryResult.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/model/QueryResult.java	(date 1537706186000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/model/QueryResult.java	(date 1537706186000)
+@@ -0,0 +1,33 @@
++package com.shmigel.scheduleManager.dialogflow.model;
++
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import lombok.Data;
++
++import java.util.HashMap;
++import java.util.Map;
++
++@Data
++@JsonIgnoreProperties(ignoreUnknown = true)
++public class QueryResult {
++
++    private String queryText;
++
++    private String action;
++
++    private Map<String, String> parameters = new HashMap<>();
++
++    public QueryResult() {
++    }
++
++    @JsonCreator
++    public QueryResult(
++            @JsonProperty("queryText") String queryText,
++            @JsonProperty("action") String action,
++            @JsonProperty("parameters") Map<String, String> parameters) {
++        this.queryText = queryText;
++        this.action = action;
++        this.parameters = parameters;
++    }
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/model/OriginalDetectIntentRequest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/model/OriginalDetectIntentRequest.java	(date 1537706186000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/model/OriginalDetectIntentRequest.java	(date 1537706186000)
+@@ -0,0 +1,22 @@
++package com.shmigel.scheduleManager.dialogflow.model;
++
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import lombok.Data;
++
++@Data
++@JsonIgnoreProperties(ignoreUnknown = true)
++public class OriginalDetectIntentRequest {
++
++    private Payload payload;
++
++    @JsonCreator
++    public OriginalDetectIntentRequest(
++            @JsonProperty("payload") Payload payload) {
++        this.payload = payload;
++    }
++
++    public OriginalDetectIntentRequest() {
++    }
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowConfig.java	(date 1537706291000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowConfig.java	(date 1537706291000)
+@@ -0,0 +1,26 @@
++package com.shmigel.scheduleManager.dialogflow;
++
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++
++import java.util.Set;
++
++@Configuration
++public class DialogflowConfig {
++
++    @Bean
++    DialogflowEventControllerListener dialogflowEventControllerListener() {
++        return new DialogflowEventControllerListener();
++    }
++
++    @Bean
++    Set<MethodWrapper> methods(DialogflowEventControllerListener dialogflowEventControllerListener) {
++        return dialogflowEventControllerListener.getMethodWrappers();
++    }
++
++    @Bean
++    DialogflowEventControllerInvoker dialogflowEventControllerInvoker() {
++        return new DialogflowEventControllerInvoker();
++    }
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowEventControllerInvoker.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowEventControllerInvoker.java	(date 1537706291000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowEventControllerInvoker.java	(date 1537706291000)
+@@ -0,0 +1,60 @@
++package com.shmigel.scheduleManager.dialogflow;
++
++import com.shmigel.scheduleManager.dialogflow.model.Request;
++import com.shmigel.scheduleManager.dialogflow.model.Response;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.beans.factory.BeanFactory;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.util.ReflectionUtils;
++
++import java.lang.reflect.Method;
++import java.util.Iterator;
++import java.util.Set;
++
++public class DialogflowEventControllerInvoker {
++
++    private Logger logger = LoggerFactory.getLogger(DialogflowEventControllerInvoker.class);
++
++    @Autowired
++    private BeanFactory beanFactory;
++
++    @Autowired
++    private Set<MethodWrapper> methodWrappers;
++
++    /**
++     * Try to find method to process given request by comparing methods' annotation and request action parameter.
++     *
++     * If method has one parameter, he's suggesting that it's parameters of the request,
++     * and send requests' parameters as argue,
++     * If method has more than one parameter he, by now, can't fill they, and throwing {@link RuntimeException},
++     * If has not parameters just invoking the method
++     *
++     * @param request given request
++     * @return Response of invoked method if any
++     */
++    public Response invokeProperMethod(Request request) {
++        Iterator<MethodWrapper> iterator = methodWrappers.iterator();
++        Response response = Response.getUnknownAnswer();
++        while (iterator.hasNext()) {
++            MethodWrapper wrapper = iterator.next();
++            if (request.getQueryResult().getAction().equals(wrapper.getAction())) {
++                Method method = wrapper.getMethod();
++                logger.debug("Find proper method: {} for processing request", method);
++                if (method.getParameterCount() == 1) {
++                     response = (Response) ReflectionUtils.invokeMethod(method,
++                             beanFactory.getBean(method.getDeclaringClass()),
++                             request.getQueryResult().getParameters());
++                } else if(method.getParameterCount() == 0) {
++                     response = (Response) ReflectionUtils.invokeMethod(method,
++                             beanFactory.getBean(method.getDeclaringClass()));
++                } else {
++                    throw new RuntimeException("Can't fill methods' parameters");
++                }
++
++            }
++        }
++        return response;
++    }
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowEventControllerListener.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowEventControllerListener.java	(date 1537706291000)
++++ src/main/java/com/shmigel/scheduleManager/dialogflow/DialogflowEventControllerListener.java	(date 1537706291000)
+@@ -0,0 +1,65 @@
++package com.shmigel.scheduleManager.dialogflow;
++
++import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
++import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
++import lombok.AllArgsConstructor;
++import lombok.Data;
++import lombok.NoArgsConstructor;
++import org.springframework.beans.factory.BeanFactory;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.context.ApplicationContext;
++import org.springframework.context.ApplicationListener;
++import org.springframework.context.event.ContextRefreshedEvent;
++
++import java.lang.reflect.Method;
++import java.util.HashSet;
++import java.util.Map;
++import java.util.Set;
++
++public class DialogflowEventControllerListener implements ApplicationListener<ContextRefreshedEvent> {
++
++    @Autowired
++    private BeanFactory beanFactory;
++
++    private Set<MethodWrapper> methodWrappers = new HashSet<>();
++
++    /**
++     * Register methods that might process dialogflow request
++     *
++     * Methods should be annotated {@link EventMapping}
++     * and locate in classes annotated {@link EventController}
++     *
++     * Each proper method saving in methodWrappers
++     *
++     * @param event
++     */
++    @Override
++    public void onApplicationEvent(ContextRefreshedEvent event) {
++        ApplicationContext context = event.getApplicationContext();
++        Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(EventController.class);
++        beansWithAnnotation.forEach((i, j) -> {
++            Method[] methods = beanFactory.getBean(i).getClass().getMethods();
++            if (methods != null) {
++                for (Method method : methods) {
++                    EventMapping annotation = method.getAnnotation(EventMapping.class);
++                    if (annotation != null) {
++                        methodWrappers.add(new MethodWrapper(method, annotation.value()));
++                    }
++                }
++            }
++        });
++        methodWrappers.forEach(System.out::println);
++    }
++
++    public Set<MethodWrapper> getMethodWrappers() {
++        return methodWrappers;
++    }
++}
++
++@Data
++@AllArgsConstructor
++@NoArgsConstructor
++class MethodWrapper {
++    private Method method;
++    private String action;
++}
+Index: src/main/java/com/shmigel/scheduleManager/DEPRECATEDGoogleCalendar.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/DEPRECATEDGoogleCalendar.java	(date 1537705462000)
++++ src/main/java/com/shmigel/scheduleManager/DEPRECATEDGoogleCalendar.java	(date 1537705462000)
+@@ -0,0 +1,79 @@
++package com.shmigel.scheduleManager;
++
++import com.google.api.services.calendar.Calendar;
++import com.google.api.services.calendar.model.CalendarListEntry;
++import com.google.api.services.calendar.model.Event;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.beans.factory.annotation.Autowired;
++
++import java.io.IOException;
++import java.util.List;
++import java.util.Optional;
++
++import static java.util.stream.Collectors.toList;
++
++//@Service
++//@Lazy
++public class DEPRECATEDGoogleCalendar {
++
++    private static Logger logger = LoggerFactory.getLogger(DEPRECATEDGoogleCalendar.class);
++
++    private static String defaultCalendarName = "ScheduleManagers' Calendar";
++
++    @Autowired
++    Calendar calendar;
++
++    public List<CalendarListEntry> getCalendars() {
++        List<CalendarListEntry> items = null;
++        try {
++            items = calendar.calendarList().list().execute().getItems();
++            logger.debug("Loaded {} calendars: {}", items.size(), items.stream()
++                    .map(this::toPrettyString).collect(toList()));
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++        return items;
++    }
++
++    private void createCalendar(CalendarListEntry entry) {
++        try {
++            calendar.calendarList().insert(entry);
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++
++    private void insertEvent(String calendarId, Event event) {
++        try {
++            calendar.events().insert(calendarId, event);
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++
++    private String isCalendarPresent() {
++        Optional<CalendarListEntry> entry = Optional.empty();
++        for (CalendarListEntry i : getCalendars()) {
++            if (i.getSummary().equals(defaultCalendarName)) {
++                logger.debug("Found calendar with default name: {}", defaultCalendarName);
++                entry = Optional.of(i);
++            }
++        }
++        return entry.map(CalendarListEntry::getId).orElse("");
++    }
++
++    public void addEvent(Event event) {
++        String calendarId = isCalendarPresent();
++        insertEvent(calendarId, event);
++    }
++
++    private String  toPrettyString(CalendarListEntry entry) {
++        return entry.getId() +" "+ entry.getSummary() +"\n";
++    }
++
++    public String createSchedule() {
++        return isCalendarPresent();
++    }
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/controller/BaseController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/controller/BaseController.java	(date 1537706346000)
++++ src/main/java/com/shmigel/scheduleManager/controller/BaseController.java	(date 1537706346000)
+@@ -1,11 +1,10 @@
+ package com.shmigel.scheduleManager.controller;
+ 
+ import com.fasterxml.jackson.databind.ObjectMapper;
+-import com.shmigel.scheduleManager.BeansConfiguration;
+-import com.shmigel.scheduleManager.NCalendar.GoogleBeanConfiguration;
+-import com.shmigel.scheduleManager.config.DialogflowEventControllerInvoker;
+-import com.shmigel.scheduleManager.model.dialogflow.Request;
+-import com.shmigel.scheduleManager.model.dialogflow.Response;
++import com.shmigel.scheduleManager.config.GoogleBeanConfiguration;
++import com.shmigel.scheduleManager.dialogflow.DialogflowEventControllerInvoker;
++import com.shmigel.scheduleManager.dialogflow.model.Request;
++import com.shmigel.scheduleManager.dialogflow.model.Response;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.beans.factory.annotation.Autowired;
+@@ -38,15 +37,19 @@
+ 
+     @RequestMapping(value = "/", method = RequestMethod.POST)
+     public ResponseEntity<Response> baseController(@RequestBody String body, @RequestHeader HttpHeaders headers) {
+-        logger.debug("Post request with headers: {}, and body: {}",headers, body);
++        logger.debug("Post request with headers: {}, and body: {}", headers, body);
+         Request request = getRequest(body);
+-        Optional<String> accessToken = Optional.ofNullable(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
+-        configuration.setAuth0Token(accessToken.orElseThrow(RuntimeException::new));
++        setAccessToken(request);
+         Response response = controllerInvoker.invokeProperMethod(request);
+         logger.debug("Response: {}", response);
+         return ResponseEntity.ok(response);
+     }
+ 
++    private void setAccessToken(Request request) {
++        Optional<String> accessToken = Optional.ofNullable(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
++        configuration.setAuth0Token(accessToken.orElseThrow(RuntimeException::new));
++    }
++
+     private Request getRequest(String body) {
+         Request r = null;
+          try {
+Index: src/main/java/com/shmigel/scheduleManager/controller/DialogflowEventController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/controller/DialogflowEventController.java	(date 1537814883000)
++++ src/main/java/com/shmigel/scheduleManager/controller/DialogflowEventController.java	(date 1537814883000)
+@@ -1,13 +1,9 @@
+ package com.shmigel.scheduleManager.controller;
+ 
+-import com.google.api.client.util.DateTime;
+-import com.google.api.services.calendar.model.Event;
+-import com.google.api.services.calendar.model.EventDateTime;
+-import com.shmigel.scheduleManager.GoogleCalendar;
+-import com.shmigel.scheduleManager.NCalendar.TGoogleCalendar;
+-import com.shmigel.scheduleManager.model.EventController;
+-import com.shmigel.scheduleManager.model.EventMapping;
+-import com.shmigel.scheduleManager.model.dialogflow.Response;
++import com.shmigel.scheduleManager.service.CalendarService;
++import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
++import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
++import com.shmigel.scheduleManager.dialogflow.model.Response;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.context.annotation.Lazy;
+ 
+@@ -19,8 +15,7 @@
+ 
+     @Lazy
+     @Autowired
+-    private TGoogleCalendar calendar;
+-//    private GoogleCalendar c;
++    private CalendarService calendar;
+ 
+     @EventMapping("TEST_EVENT")
+     public Response testEvent() {
+@@ -35,7 +30,7 @@
+ 
+     @EventMapping("CREATE_SCHEDULE")
+     public Response createSchedule() throws IOException {
+-        System.out.println(calendar);
++        calendar.getCalendar();
+         return new Response("Schedule's created");
+     }
+ 
+Index: src/main/java/com/shmigel/scheduleManager/config/BeansConfiguration.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/config/BeansConfiguration.java	(date 1537706346000)
++++ src/main/java/com/shmigel/scheduleManager/config/BeansConfiguration.java	(date 1537706346000)
+@@ -0,0 +1,40 @@
++package com.shmigel.scheduleManager.config;
++
++import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
++import com.google.api.client.http.javanet.NetHttpTransport;
++import com.google.api.client.json.jackson2.JacksonFactory;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.context.annotation.*;
++import org.springframework.web.client.RestTemplate;
++
++import java.io.IOException;
++import java.security.GeneralSecurityException;
++
++@Configuration
++public class BeansConfiguration {
++
++    private static Logger logger = LoggerFactory.getLogger(BeansConfiguration.class);
++
++    @Bean
++    RestTemplate restTemplate() {
++        return new RestTemplate();
++    }
++
++    @Bean
++    JacksonFactory jacksonFactory() {
++        return JacksonFactory.getDefaultInstance();
++    }
++
++    @Bean
++    NetHttpTransport netHttpTransport() {
++        NetHttpTransport httpTransport = null;
++        try {
++            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
++        } catch (GeneralSecurityException | IOException e) {
++            e.printStackTrace();
++        }
++        return httpTransport;
++    }
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/config/GoogleBeanConfiguration.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/config/GoogleBeanConfiguration.java	(date 1537707506000)
++++ src/main/java/com/shmigel/scheduleManager/config/GoogleBeanConfiguration.java	(date 1537707506000)
+@@ -0,0 +1,42 @@
++package com.shmigel.scheduleManager.config;
++
++import com.google.api.client.auth.oauth2.TokenResponse;
++import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
++import com.google.api.client.http.javanet.NetHttpTransport;
++import com.google.api.client.json.jackson2.JacksonFactory;
++import com.shmigel.scheduleManager.service.CalendarService;
++import com.shmigel.scheduleManager.service.Auth0TokenService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.context.annotation.Scope;
++
++@Configuration
++public class GoogleBeanConfiguration {
++
++    private String accessToken;
++
++    @Autowired
++    private Auth0TokenService tokenManager;
++
++    public void setAuth0Token(String auth0Token) {
++        String accessToken = tokenManager.load(auth0Token);
++        this.accessToken = accessToken;
++    }
++
++    @Bean
++    @Scope("prototype")
++    GoogleCredential googleCredential() {
++        accessToken.toString();
++        return new GoogleCredential().setFromTokenResponse(new TokenResponse().setAccessToken(accessToken));
++    }
++
++    @Bean
++    @Scope("prototype")
++    CalendarService googleCalendar(JacksonFactory factory,
++                                   NetHttpTransport httpTransport,
++                                   GoogleCredential credential) {
++        return new CalendarService(factory, httpTransport, credential);
++    }
++
++}
+Index: src/main/java/com/shmigel/scheduleManager/config/DialogflowConfig.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/config/DialogflowConfig.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/config/DialogflowConfig.java	(date 0)
+@@ -1,26 +0,0 @@
+-package com.shmigel.scheduleManager.config;
+-
+-import org.springframework.context.annotation.Bean;
+-import org.springframework.context.annotation.Configuration;
+-
+-import java.util.Set;
+-
+-@Configuration
+-public class DialogflowConfig {
+-
+-    @Bean
+-    DialogflowEventControllerListener dialogflowEventControllerListener() {
+-        return new DialogflowEventControllerListener();
+-    }
+-
+-    @Bean
+-    Set<MethodWrapper> methods(DialogflowEventControllerListener dialogflowEventControllerListener) {
+-        return dialogflowEventControllerListener.getMethodWrappers();
+-    }
+-
+-    @Bean
+-    DialogflowEventControllerInvoker dialogflowEventControllerInvoker() {
+-        return new DialogflowEventControllerInvoker();
+-    }
+-
+-}
+Index: src/main/java/com/shmigel/scheduleManager/config/DialogflowEventControllerInvoker.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/config/DialogflowEventControllerInvoker.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/config/DialogflowEventControllerInvoker.java	(date 0)
+@@ -1,60 +0,0 @@
+-package com.shmigel.scheduleManager.config;
+-
+-import com.shmigel.scheduleManager.model.dialogflow.Request;
+-import com.shmigel.scheduleManager.model.dialogflow.Response;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+-import org.springframework.beans.factory.BeanFactory;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.util.ReflectionUtils;
+-
+-import java.lang.reflect.Method;
+-import java.util.Iterator;
+-import java.util.Set;
+-
+-public class DialogflowEventControllerInvoker {
+-
+-    private Logger logger = LoggerFactory.getLogger(DialogflowEventControllerInvoker.class);
+-
+-    @Autowired
+-    private BeanFactory beanFactory;
+-
+-    @Autowired
+-    private Set<MethodWrapper> methodWrappers;
+-
+-    /**
+-     * Try to find method to process given request by comparing methods' annotation and request action parameter.
+-     *
+-     * If method has one parameter, he's suggesting that it's parameters of the request,
+-     * and send requests' parameters as argue,
+-     * If method has more than one parameter he, by now, can't fill they, and throwing {@link RuntimeException},
+-     * If has not parameters just invoking the method
+-     *
+-     * @param request given request
+-     * @return Response of invoked method if any
+-     */
+-    public Response invokeProperMethod(Request request) {
+-        Iterator<MethodWrapper> iterator = methodWrappers.iterator();
+-        Response response = Response.getUnknownAnswer();
+-        while (iterator.hasNext()) {
+-            MethodWrapper wrapper = iterator.next();
+-            if (request.getQueryResult().getAction().equals(wrapper.getAction())) {
+-                Method method = wrapper.getMethod();
+-                logger.debug("Find proper method: {} for processing request", method);
+-                if (method.getParameterCount() == 1) {
+-                     response = (Response) ReflectionUtils.invokeMethod(method,
+-                             beanFactory.getBean(method.getDeclaringClass()),
+-                             request.getQueryResult().getParameters());
+-                } else if(method.getParameterCount() == 0) {
+-                     response = (Response) ReflectionUtils.invokeMethod(method,
+-                             beanFactory.getBean(method.getDeclaringClass()));
+-                } else {
+-                    throw new RuntimeException("Can't fill methods' parameters");
+-                }
+-
+-            }
+-        }
+-        return response;
+-    }
+-
+-}
+Index: src/main/java/com/shmigel/scheduleManager/config/DialogflowEventControllerListener.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/config/DialogflowEventControllerListener.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/config/DialogflowEventControllerListener.java	(date 0)
+@@ -1,65 +0,0 @@
+-package com.shmigel.scheduleManager.config;
+-
+-import com.shmigel.scheduleManager.model.EventController;
+-import com.shmigel.scheduleManager.model.EventMapping;
+-import lombok.AllArgsConstructor;
+-import lombok.Data;
+-import lombok.NoArgsConstructor;
+-import org.springframework.beans.factory.BeanFactory;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.context.ApplicationContext;
+-import org.springframework.context.ApplicationListener;
+-import org.springframework.context.event.ContextRefreshedEvent;
+-
+-import java.lang.reflect.Method;
+-import java.util.HashSet;
+-import java.util.Map;
+-import java.util.Set;
+-
+-public class DialogflowEventControllerListener implements ApplicationListener<ContextRefreshedEvent> {
+-
+-    @Autowired
+-    private BeanFactory beanFactory;
+-
+-    private Set<MethodWrapper> methodWrappers = new HashSet<>();
+-
+-    /**
+-     * Register methods that might process dialogflow request
+-     *
+-     * Methods should be annotated {@link EventMapping}
+-     * and locate in classes annotated {@link EventController}
+-     *
+-     * Each proper method saving in methodWrappers
+-     *
+-     * @param event
+-     */
+-    @Override
+-    public void onApplicationEvent(ContextRefreshedEvent event) {
+-        ApplicationContext context = event.getApplicationContext();
+-        Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(EventController.class);
+-        beansWithAnnotation.forEach((i, j) -> {
+-            Method[] methods = beanFactory.getBean(i).getClass().getMethods();
+-            if (methods != null) {
+-                for (Method method : methods) {
+-                    EventMapping annotation = method.getAnnotation(EventMapping.class);
+-                    if (annotation != null) {
+-                        methodWrappers.add(new MethodWrapper(method, annotation.value()));
+-                    }
+-                }
+-            }
+-        });
+-        methodWrappers.forEach(System.out::println);
+-    }
+-
+-    public Set<MethodWrapper> getMethodWrappers() {
+-        return methodWrappers;
+-    }
+-}
+-
+-@Data
+-@AllArgsConstructor
+-@NoArgsConstructor
+-class MethodWrapper {
+-    private Method method;
+-    private String action;
+-}
+Index: src/main/java/com/shmigel/scheduleManager/GoogleCalendar.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/GoogleCalendar.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/GoogleCalendar.java	(date 0)
+@@ -1,83 +0,0 @@
+-package com.shmigel.scheduleManager;
+-
+-import com.google.api.client.json.GenericJson;
+-import com.google.api.services.calendar.Calendar;
+-import com.google.api.services.calendar.model.CalendarListEntry;
+-import com.google.api.services.calendar.model.Event;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.context.annotation.Lazy;
+-import org.springframework.stereotype.Service;
+-
+-import java.io.IOException;
+-import java.util.AbstractMap;
+-import java.util.List;
+-import java.util.Optional;
+-
+-import static java.util.stream.Collectors.toList;
+-
+-//@Service
+-//@Lazy
+-public class GoogleCalendar {
+-
+-    private static Logger logger = LoggerFactory.getLogger(GoogleCalendar.class);
+-
+-    private static String defaultCalendarName = "ScheduleManagers' Calendar";
+-
+-    @Autowired
+-    Calendar calendar;
+-
+-    public List<CalendarListEntry> getCalendars() {
+-        List<CalendarListEntry> items = null;
+-        try {
+-            items = calendar.calendarList().list().execute().getItems();
+-            logger.debug("Loaded {} calendars: {}", items.size(), items.stream()
+-                    .map(this::toPrettyString).collect(toList()));
+-        } catch (IOException e) {
+-            e.printStackTrace();
+-        }
+-        return items;
+-    }
+-
+-    private void createCalendar(CalendarListEntry entry) {
+-        try {
+-            calendar.calendarList().insert(entry);
+-        } catch (IOException e) {
+-            e.printStackTrace();
+-        }
+-    }
+-
+-    private void insertEvent(String calendarId, Event event) {
+-        try {
+-            calendar.events().insert(calendarId, event);
+-        } catch (IOException e) {
+-            e.printStackTrace();
+-        }
+-    }
+-
+-    private String isCalendarPresent() {
+-        Optional<CalendarListEntry> entry = Optional.empty();
+-        for (CalendarListEntry i : getCalendars()) {
+-            if (i.getSummary().equals(defaultCalendarName)) {
+-                logger.debug("Found calendar with default name: {}", defaultCalendarName);
+-                entry = Optional.of(i);
+-            }
+-        }
+-        return entry.map(CalendarListEntry::getId).orElse("");
+-    }
+-
+-    public void addEvent(Event event) {
+-        String calendarId = isCalendarPresent();
+-        insertEvent(calendarId, event);
+-    }
+-
+-    private String  toPrettyString(CalendarListEntry entry) {
+-        return entry.getId() +" "+ entry.getSummary() +"\n";
+-    }
+-
+-    public String createSchedule() {
+-        return isCalendarPresent();
+-    }
+-
+-}
+Index: src/main/java/com/shmigel/scheduleManager/ScheduleManagerApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/ScheduleManagerApplication.java	(date 1537706169000)
++++ src/main/java/com/shmigel/scheduleManager/ScheduleManagerApplication.java	(date 1537706169000)
+@@ -1,20 +1,10 @@
+ package com.shmigel.scheduleManager;
+ 
+-import com.shmigel.scheduleManager.config.DialogflowConfig;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+-import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
+-import org.springframework.context.annotation.Import;
+-import org.springframework.context.event.ContextRefreshedEvent;
+-import org.springframework.context.event.EventListener;
+-import org.springframework.http.ResponseEntity;
+ import org.springframework.stereotype.Controller;
+-import org.springframework.web.bind.annotation.RequestBody;
+-
+-import javax.annotation.PostConstruct;
+-import java.io.IOException;
+ 
+ @SpringBootApplication
+ @Controller
+Index: src/main/java/com/shmigel/scheduleManager/NCalendar/TGoogleCalendar.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/NCalendar/TGoogleCalendar.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/NCalendar/TGoogleCalendar.java	(date 0)
+@@ -1,16 +0,0 @@
+-package com.shmigel.scheduleManager.NCalendar;
+-
+-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+-import com.google.api.client.http.javanet.NetHttpTransport;
+-import com.google.api.client.json.jackson2.JacksonFactory;
+-import com.google.api.services.calendar.Calendar;
+-
+-public class TGoogleCalendar {
+-
+-    private Calendar calendar;
+-
+-    public TGoogleCalendar(JacksonFactory jacksonFactory,
+-                           NetHttpTransport httpTransport, GoogleCredential googleCredential) {
+-        calendar = new Calendar(httpTransport, jacksonFactory, googleCredential);
+-    }
+-}
+Index: src/main/java/com/shmigel/scheduleManager/NCalendar/GoogleBeanConfiguration.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/NCalendar/GoogleBeanConfiguration.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/NCalendar/GoogleBeanConfiguration.java	(date 0)
+@@ -1,44 +0,0 @@
+-package com.shmigel.scheduleManager.NCalendar;
+-
+-import com.google.api.client.auth.oauth2.TokenResponse;
+-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+-import com.google.api.client.http.javanet.NetHttpTransport;
+-import com.google.api.client.json.jackson2.JacksonFactory;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.context.annotation.Bean;
+-import org.springframework.context.annotation.Configuration;
+-import org.springframework.context.annotation.Lazy;
+-import org.springframework.context.annotation.Scope;
+-
+-@Configuration
+-public class GoogleBeanConfiguration {
+-
+-    private String accessToken;
+-
+-    @Autowired
+-    private Auth0TokenManager tokenManager;
+-
+-    public void setAuth0Token(String auth0Token) {
+-        String accessToken = tokenManager.load(auth0Token);
+-        this.accessToken = accessToken;
+-    }
+-
+-    @Bean
+-
+-    @Scope("prototype")
+-    GoogleCredential googleCredential() {
+-        if (accessToken != null) {
+-            return new GoogleCredential().setFromTokenResponse(new TokenResponse().setAccessToken(accessToken));
+-        }else {throw new RuntimeException("AccessToken is null");}
+-    }
+-
+-    @Bean
+-    @Lazy
+-    @Scope("prototype")
+-    TGoogleCalendar googleCalendar(JacksonFactory factory,
+-                                   NetHttpTransport httpTransport,
+-                                   GoogleCredential credential) {
+-        return new TGoogleCalendar(factory, httpTransport, credential);
+-    }
+-
+-}
+Index: src/main/java/com/shmigel/scheduleManager/NCalendar/Auth0TokenManager.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/NCalendar/Auth0TokenManager.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/NCalendar/Auth0TokenManager.java	(date 0)
+@@ -1,64 +0,0 @@
+-package com.shmigel.scheduleManager.NCalendar;
+-
+-import com.mashape.unirest.http.HttpResponse;
+-import com.mashape.unirest.http.JsonNode;
+-import com.mashape.unirest.http.Unirest;
+-import com.mashape.unirest.http.exceptions.UnirestException;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.beans.factory.annotation.Value;
+-import org.springframework.stereotype.Service;
+-import org.springframework.web.client.RestTemplate;
+-
+-import java.io.IOException;
+-
+-/**
+- * Since request from dialogflow gives auth0 access token instead of google access token,
+- * we need to perform few additional request to get relevant access token
+- * witch we will use to access to google calendar api
+- */
+-//TODO: REWRITE!!!
+-@Service
+-public class Auth0TokenManager {
+-
+-    @Autowired
+-    private Auth0TokenManager tokenManager;
+-
+-    @Autowired
+-    private RestTemplate template;
+-
+-    /**
+-     * Access token for auth0 account manager
+-     */
+-//    @Value("{auth0.accessToken}")
+-    private final String authManagerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ik1ERTVOa0pDUlRJMU1qQkJSak5FTUVGR1JqQTRORU16TnpWR016a3hNemcxTVRFM01UWTJNQSJ9.eyJpc3MiOiJodHRwczovL3NjaGVkdWxlLW1hbmFnZXIuZXUuYXV0aDAuY29tLyIsInN1YiI6IjByQUo0RXpBSkFLT2hUYlE1UjYzRU1iZDZvUmZ4eU8xQGNsaWVudHMiLCJhdWQiOiJodHRwczovL3NjaGVkdWxlLW1hbmFnZXIuZXUuYXV0aDAuY29tL2FwaS92Mi8iLCJpYXQiOjE1Mzc3MDM5NDYsImV4cCI6MTUzNzc5MDM0NiwiYXpwIjoiMHJBSjRFekFKQUtPaFRiUTVSNjNFTWJkNm9SZnh5TzEiLCJzY29wZSI6InJlYWQ6dXNlcnMgcmVhZDp1c2VyX2lkcF90b2tlbnMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.QwkTAwAxjM-RqOJNR9i-kpCLIYKXOes12yBUIQEQEL0JZThlYUwj1AidZCCP-us5s3vjAw97G4dv-ACKYnN20AHQYYRX1MCzuvvSaC5Wd0JOzdh-XVaUDlP1lSKXI3KQR2v_bSvXo8Xbdi2YthNZMIIFsjf8tadcDlc51bzvmCO1o0nqRJsrhbeetOgPmbVSNF5r-BRgLYy0T8G_W4SI3nxU2CAmT23JI3hgDNFa61C0DFxCW2L8TiUhdiOouAvRa5GVi3g5WGqaZClhfVnNtqF0jl7ngTmKCY9qv1FmJvXaplj8jAsPOuCGfqEibWNCCSAqQjw-o9FqLKPbR11Cmw";
+-
+-    private static Logger logger = LoggerFactory.getLogger(Auth0TokenManager.class);
+-
+-    private String getUserId(String auth0Token) throws UnirestException {
+-        HttpResponse<JsonNode> userInfoResponse = Unirest.get("https://schedule-manager.eu.auth0.com/userinfo")
+-                .header("Authorization", "Bearer " + auth0Token).asJson();
+-        return userInfoResponse.getBody().getObject().get("sub").toString();
+-    }
+-
+-    private String getAccessToken(String userId) throws UnirestException {
+-        HttpResponse<JsonNode> accessTokenResonse = Unirest.get("https://schedule-manager.eu.auth0.com/api/v2/users/" + userId)
+-                .header("Authorization", "Bearer " + authManagerToken).asJson();
+-        return accessTokenResonse.getBody().getObject()
+-                .getJSONArray("identities").getJSONObject(0).get("access_token").toString();
+-    }
+-
+-    public String load(String userToken) {
+-        String accessToken = null;
+-        try {
+-            String userId = tokenManager.getUserId(userToken);
+-            accessToken = tokenManager.getAccessToken(userId);
+-            logger.info("userId:"+userId+" token:"+accessToken);
+-        } catch (UnirestException e) {
+-            e.printStackTrace();
+-        }
+-        return accessToken;
+-    }
+-
+-}
+Index: src/main/java/com/shmigel/scheduleManager/BeansConfiguration.java
+===================================================================
+--- src/main/java/com/shmigel/scheduleManager/BeansConfiguration.java	(date 0)
++++ src/main/java/com/shmigel/scheduleManager/BeansConfiguration.java	(date 0)
+@@ -1,40 +0,0 @@
+-package com.shmigel.scheduleManager;
+-
+-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+-import com.google.api.client.http.javanet.NetHttpTransport;
+-import com.google.api.client.json.jackson2.JacksonFactory;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+-import org.springframework.context.annotation.*;
+-import org.springframework.web.client.RestTemplate;
+-
+-import java.io.IOException;
+-import java.security.GeneralSecurityException;
+-
+-@Configuration
+-public class BeansConfiguration {
+-
+-    private static Logger logger = LoggerFactory.getLogger(BeansConfiguration.class);
+-
+-    @Bean
+-    RestTemplate restTemplate() {
+-        return new RestTemplate();
+-    }
+-
+-    @Bean
+-    JacksonFactory jacksonFactory() {
+-        return JacksonFactory.getDefaultInstance();
+-    }
+-
+-    @Bean
+-    NetHttpTransport netHttpTransport() {
+-        NetHttpTransport httpTransport = null;
+-        try {
+-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+-        } catch (GeneralSecurityException | IOException e) {
+-            e.printStackTrace();
+-        }
+-        return httpTransport;
+-    }
+-
+-}
+Index: src/test/java/com/shmigel/scheduleManager/ScheduleManagerApplicationTests.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/com/shmigel/scheduleManager/ScheduleManagerApplicationTests.java	(date 1537808824000)
++++ src/test/java/com/shmigel/scheduleManager/ScheduleManagerApplicationTests.java	(date 1537808824000)
+@@ -0,0 +1,142 @@
++package com.shmigel.scheduleManager;
++
++import com.fasterxml.jackson.core.JsonProcessingException;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.shmigel.scheduleManager.dialogflow.model.*;
++import com.shmigel.scheduleManager.service.Auth0TokenService;
++import org.junit.Test;
++import org.junit.runner.RunWith;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
++import org.springframework.boot.test.context.SpringBootTest;
++import org.springframework.test.context.junit4.SpringRunner;
++import org.springframework.test.web.servlet.MockMvc;
++
++import static org.junit.Assert.*;
++import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
++import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
++
++import org.springframework.test.web.servlet.MvcResult;
++
++import java.io.IOException;
++import java.util.Collections;
++import java.util.Map;
++
++@RunWith(SpringRunner.class)
++@SpringBootTest
++@AutoConfigureMockMvc
++public class ScheduleManagerApplicationTests {
++
++	private static Logger logger = LoggerFactory.getLogger(ScheduleManagerApplicationTests.class);
++
++	@Autowired
++	private MockMvc mockMvc;
++
++	@Autowired
++	private Auth0TokenService tokenManager;
++
++	private static String prepareJson = "{\n" +
++			"  \"responseId\": \"b0e90e8a-344e-43bc-a5b7-e81e47731d68\",\n" +
++			"  \"queryResult\": {\n" +
++			"    \"queryText\": \"do test\",\n" +
++			"    \"action\": \"TEST_EVENT\",\n" +
++			"    \"parameters\": {},\n" +
++			"    \"allRequiredParamsPresent\": true,\n" +
++			"    \"fulfillmentMessages\": [\n" +
++			"      {\n" +
++			"        \"text\": {\n" +
++			"          \"text\": [\n" +
++			"            \"\"\n" +
++			"          ]\n" +
++			"        }\n" +
++			"      }\n" +
++			"    ],\n" +
++			"    \"intent\": {\n" +
++			"      \"name\": \"projects/schedule-manager-a6180/agent/intents/02c8eae7-46f7-45f9-ab4d-d8c9e5204243\",\n" +
++			"      \"displayName\": \"OnResponse\"\n" +
++			"    },\n" +
++			"    \"intentDetectionConfidence\": 1,\n" +
++			"    \"languageCode\": \"en\"\n" +
++			"  },\n" +
++			"  \"originalDetectIntentRequest\": {\n" +
++			"    \"payload\": {}\n" +
++			"  },\n" +
++			"  \"session\": \"projects/schedule-manager-a6180/agent/sessions/8db5ea0d-f5c9-acf2-ee17-f6067f29dbb6\"\n" +
++			"}";
++
++	private String jsonOf(Object o) {
++		String json = "";
++		try {
++			json = new ObjectMapper().writeValueAsString(o);
++		} catch (JsonProcessingException e) {
++			e.printStackTrace();
++		}
++		return json;
++	}
++
++	private String token = "ygGF7_9APnQUnDa5TAaqlP2EqB4xBSZb";
++
++	private Request request(String action) {
++		return new Request(
++				new QueryResult(action, action, null),
++				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK")))
++		);
++	}
++
++	private Request requestWithParameters(String action, Map<String, String> parameters) {
++		return new Request(
++				new QueryResult(action, action , parameters),
++				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK")))
++		);
++	}
++
++	@Test
++	public void getController() throws Exception {
++		MvcResult test = mockMvc.perform(get("/")).andExpect(status().isOk()).andReturn();
++		logger.info("Return form get request: {}", test.getResponse().getContentAsString());
++	}
++
++	@Test
++	public void jsonMapping() throws IOException {
++		Request request = new ObjectMapper().readValue(prepareJson, Request.class);
++		logger.info("Get object: {}", request.toString());
++	}
++
++	@Test
++	public void baseController() throws Exception {
++		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
++				.content(jsonOf(request("CREATE_SCHEDULE"))))
++				.andExpect(status().isOk()).andReturn();
++		String contentAsString = result.getResponse().getContentAsString();
++		assertNotNull(contentAsString);
++		logger.info("Return from post request {}", contentAsString);
++	}
++
++	@Test
++	public void control() throws Exception {
++		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
++				.content(jsonOf(request("TEST_EVENT"))))
++				.andExpect(status().isOk()).andReturn();
++		String content = result.getResponse().getContentAsString();
++		assertNotNull(content);
++		logger.debug("Returned from request:"+content);
++	}
++
++	@Test
++	public void testTokenManager() {
++		String load = tokenManager.load(token);
++		logger.debug("Receive accessToken:"+ load);
++	}
++
++	@Test
++	public void rawJsonTest() throws Exception {
++		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
++				.content(jsonOf(requestWithParameters("ADD_USER", Collections.singletonMap("EMAIL", "sh@mail.com")))))
++				.andExpect(status().isOk()).andReturn();
++		String contentAsString = result.getResponse().getContentAsString();
++		logger.info("Return from post request {}", contentAsString);
++	}
++
++}
+Index: src/test/java/com/shmigel/scheduleManager/schedulemanager/ScheduleManagerApplicationTests.java
+===================================================================
+--- src/test/java/com/shmigel/scheduleManager/schedulemanager/ScheduleManagerApplicationTests.java	(date 0)
++++ src/test/java/com/shmigel/scheduleManager/schedulemanager/ScheduleManagerApplicationTests.java	(date 0)
+@@ -1,142 +0,0 @@
+-package com.shmigel.scheduleManager.schedulemanager;
+-
+-import com.fasterxml.jackson.core.JsonProcessingException;
+-import com.fasterxml.jackson.databind.ObjectMapper;
+-import com.shmigel.scheduleManager.NCalendar.Auth0TokenManager;
+-import com.shmigel.scheduleManager.model.dialogflow.*;
+-import org.junit.Test;
+-import org.junit.runner.RunWith;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+-import org.springframework.boot.test.context.SpringBootTest;
+-import org.springframework.test.context.junit4.SpringRunner;
+-import org.springframework.test.web.servlet.MockMvc;
+-
+-import static org.junit.Assert.*;
+-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+-
+-import org.springframework.test.web.servlet.MvcResult;
+-
+-import java.io.IOException;
+-import java.util.Collections;
+-import java.util.Map;
+-
+-@RunWith(SpringRunner.class)
+-@SpringBootTest
+-@AutoConfigureMockMvc
+-public class ScheduleManagerApplicationTests {
+-
+-	private static Logger logger = LoggerFactory.getLogger(ScheduleManagerApplicationTests.class);
+-
+-	@Autowired
+-	private MockMvc mockMvc;
+-
+-	@Autowired
+-	private Auth0TokenManager tokenManager;
+-
+-	private static String prepareJson = "{\n" +
+-			"  \"responseId\": \"b0e90e8a-344e-43bc-a5b7-e81e47731d68\",\n" +
+-			"  \"queryResult\": {\n" +
+-			"    \"queryText\": \"do test\",\n" +
+-			"    \"action\": \"TEST_EVENT\",\n" +
+-			"    \"parameters\": {},\n" +
+-			"    \"allRequiredParamsPresent\": true,\n" +
+-			"    \"fulfillmentMessages\": [\n" +
+-			"      {\n" +
+-			"        \"text\": {\n" +
+-			"          \"text\": [\n" +
+-			"            \"\"\n" +
+-			"          ]\n" +
+-			"        }\n" +
+-			"      }\n" +
+-			"    ],\n" +
+-			"    \"intent\": {\n" +
+-			"      \"name\": \"projects/schedule-manager-a6180/agent/intents/02c8eae7-46f7-45f9-ab4d-d8c9e5204243\",\n" +
+-			"      \"displayName\": \"OnResponse\"\n" +
+-			"    },\n" +
+-			"    \"intentDetectionConfidence\": 1,\n" +
+-			"    \"languageCode\": \"en\"\n" +
+-			"  },\n" +
+-			"  \"originalDetectIntentRequest\": {\n" +
+-			"    \"payload\": {}\n" +
+-			"  },\n" +
+-			"  \"session\": \"projects/schedule-manager-a6180/agent/sessions/8db5ea0d-f5c9-acf2-ee17-f6067f29dbb6\"\n" +
+-			"}";
+-
+-	private String jsonOf(Object o) {
+-		String json = "";
+-		try {
+-			json = new ObjectMapper().writeValueAsString(o);
+-		} catch (JsonProcessingException e) {
+-			e.printStackTrace();
+-		}
+-		return json;
+-	}
+-
+-	private String token = "ombpz6rm_Eh3XQPhNpr53X9drwJaq1l7";
+-
+-	private Request request(String action) {
+-		return new Request(
+-				new QueryResult(action, action, null),
+-				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK")))
+-		);
+-	}
+-
+-	private Request requestWithParameters(String action, Map<String, String> parameters) {
+-		return new Request(
+-				new QueryResult(action, action , parameters),
+-				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK")))
+-		);
+-	}
+-
+-//	@Test
+-	public void getController() throws Exception {
+-		MvcResult test = mockMvc.perform(get("/")).andExpect(status().isOk()).andReturn();
+-		logger.info("Return form get request: {}", test.getResponse().getContentAsString());
+-	}
+-
+-//	@Test
+-	public void jsonMapping() throws IOException {
+-		Request request = new ObjectMapper().readValue(prepareJson, Request.class);
+-		logger.info("Get object: {}", request.toString());
+-	}
+-
+-//	@Test
+-	public void baseController() throws Exception {
+-		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+-				.content(jsonOf(request("CREATE_SCHEDULE"))))
+-				.andExpect(status().isOk()).andReturn();
+-		String contentAsString = result.getResponse().getContentAsString();
+-		assertNotNull(contentAsString);
+-		logger.info("Return from post request {}", contentAsString);
+-	}
+-
+-//	@Test
+-	public void control() throws Exception {
+-		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+-				.content(jsonOf(request("TEST_EVENT"))))
+-				.andExpect(status().isOk()).andReturn();
+-		String content = result.getResponse().getContentAsString();
+-		assertNotNull(content);
+-		logger.debug("Returned from request");
+-	}
+-
+-	@Test
+-	public void testTokenManager() {
+-		String load = tokenManager.load(token);
+-		logger.debug("Receive accessToken:"+ load);
+-	}
+-
+-//	@Test
+-	public void rawJsonTest() throws Exception {
+-		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+-				.content(jsonOf(requestWithParameters("ADD_USER", Collections.singletonMap("EMAIL", "sh@mail.com")))))
+-				.andExpect(status().isOk()).andReturn();
+-		String contentAsString = result.getResponse().getContentAsString();
+-		logger.info("Return from post request {}", contentAsString);
+-	}
+-
+-}
