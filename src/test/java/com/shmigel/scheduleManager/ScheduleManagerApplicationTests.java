@@ -76,7 +76,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "ygGF7_9APnQUnDa5TAaqlP2EqB4xBSZb";
+	private String token = "6kioA7DOhawwpW3AMQg0sr8nYy6mLmSc";
 
 	private Request request(String action) {
 		return new Request(

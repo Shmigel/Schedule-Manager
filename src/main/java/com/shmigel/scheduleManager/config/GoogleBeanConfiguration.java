@@ -29,7 +29,6 @@ public class GoogleBeanConfiguration {
     @Lazy
     @Scope("prototype")
     GoogleCredential googleCredential() {
-        accessToken.toString();
         return new GoogleCredential().setFromTokenResponse(new TokenResponse().setAccessToken(accessToken));
     }
 
