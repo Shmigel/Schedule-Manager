@@ -30,7 +30,7 @@ public class BaseController {
     private GoogleBeanConfiguration configuration;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> testGetMethod(@RequestParam Map<String, String> parameters) {
+    public ResponseEntity<?> testGetMethod(@RequestParam(required = false) Map<String, String> parameters) {
         return ResponseEntity.ok("It's working \n"+ parameters);
     }
 
