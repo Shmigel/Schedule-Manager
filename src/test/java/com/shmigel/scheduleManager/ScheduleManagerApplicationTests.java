@@ -76,7 +76,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "6kioA7DOhawwpW3AMQg0sr8nYy6mLmSc";
+	private String token = "IBmadoOrIf6LQmfT4ssM-zv6QOoVgNLV";
 
 	private Request request(String action) {
 		return new Request(
@@ -126,8 +126,8 @@ public class ScheduleManagerApplicationTests {
 
 	@Test
 	public void testTokenManager() {
-		String load = tokenManager.load(token);
-		logger.debug("Receive accessToken:"+ load);
+		Tuple<String, String> load = tokenManager.load(token);
+		logger.debug("Receive accessToken:"+ load.getFirst()+", refresh:"+load.getSecond());
 	}
 
 	@Test
