@@ -19,7 +19,8 @@ public class DialogflowEventController {
 
     @EventMapping("TEST_EVENT")
     public Response testEvent() {
-        return new Response("OnResponse is successful");
+        calendar.allFuncTest();
+        return new Response("Test is successful");
     }
 
     @EventMapping("LIVE_EVENT")
@@ -34,17 +35,16 @@ public class DialogflowEventController {
 
     @EventMapping("ADD_EVENT")
     public Response addEvent(Map<String, String> parameters) {
-        return new Response("Event's scheduled");
+        return new Response("Event's scheduled. Currently not supported");
     }
 
     @EventMapping("CREATE_SCHEDULE")
     public Response createSchedule() throws IOException {
-        calendar.test();
-        return new Response("Schedule's created");
+        return new Response("Schedule's created. Currently not supported");
     }
 
     @EventMapping("ADD_USER")
     public Response addUser(Map<String, String> parameters) {
-        return new Response("User's added");
+        return new Response("User's added. Currently not supported");
     }
 }

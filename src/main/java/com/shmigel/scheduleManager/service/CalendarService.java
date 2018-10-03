@@ -64,18 +64,12 @@ public class CalendarService {
         return events;
     }
 
-    public void test() {
-        try {
-            List<CalendarListEntry> items = calendar.calendarList().list().execute().getItems();
-//            items.forEach(i -> System.out.println(toPrettyString(i)));
-
-//            System.out.println(calendar.calendars().get("uk.ukrainian#holiday@group.v.calendar.google.com").execute());
-            upcomingEvents().forEach(i -> System.out.println(toPrettyString(i)));
-            System.out.println();
-            System.out.println(toPrettyString(nextEvent()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void allFuncTest() {
+        upcomingEvents().forEach(i -> System.out.println(toPrettyString(i)));
+        System.out.println();
+        System.out.println(toPrettyString(nextEvent()));
+        System.out.println();
+        System.out.println(toPrettyString(liveEvent().right().value()));
     }
 
     public Either<Object, Event> liveEvent() {
