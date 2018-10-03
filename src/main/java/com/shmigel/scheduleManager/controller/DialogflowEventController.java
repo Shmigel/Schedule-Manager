@@ -19,8 +19,17 @@ public class DialogflowEventController {
 
     @EventMapping("TEST_EVENT")
     public Response testEvent() {
-
         return new Response("OnResponse is successful");
+    }
+
+    @EventMapping("LIVE_EVENT")
+    public Response liveEvent() {
+        return new Response(calendar.liveEvent().toString());
+    }
+
+    @EventMapping("UPCOMING_EVENT")
+    public Response upcomingEvent() {
+        return new Response(calendar.nextEvent().toString());
     }
 
     @EventMapping("ADD_EVENT")
@@ -30,7 +39,7 @@ public class DialogflowEventController {
 
     @EventMapping("CREATE_SCHEDULE")
     public Response createSchedule() throws IOException {
-        calendar.getCalendar();
+        calendar.test();
         return new Response("Schedule's created");
     }
 

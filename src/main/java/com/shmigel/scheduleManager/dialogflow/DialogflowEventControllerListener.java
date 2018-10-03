@@ -2,9 +2,6 @@ package com.shmigel.scheduleManager.dialogflow;
 
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +12,8 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.shmigel.scheduleManager.dialogflow.model.MethodWrapper;
 
 public class DialogflowEventControllerListener implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -56,10 +55,3 @@ public class DialogflowEventControllerListener implements ApplicationListener<Co
     }
 }
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class MethodWrapper {
-    private Method method;
-    private String action;
-}

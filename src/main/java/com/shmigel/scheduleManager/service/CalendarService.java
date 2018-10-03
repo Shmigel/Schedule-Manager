@@ -7,14 +7,14 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.Events;
+import fj.data.Either;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+//en.ukrainian#holiday@group.v.calendar.google.com
 
 public class CalendarService {
 
@@ -29,38 +29,74 @@ public class CalendarService {
         calendar = new Calendar(httpTransport, jacksonFactory, googleCredential);
     }
 
-    public void getCalendar() {
-        DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = null;
+    /**
+     * Return id of managed defaultCalendar
+     *
+     * @return
+     */
+    private CalendarListEntry defaultCalendar() {
+        CalendarListEntry entry = null;
         try {
-            events = calendar.events().list("primary")
-                    .setMaxResults(10)
-                    .setTimeMin(now)
-                    .setOrderBy("startTime")
-                    .setSingleEvents(true)
-                    .execute();
+            entry = calendar.calendarList().list().execute().getItems().stream()
+                    .filter((i) -> i.getSummary().equals(defaultCalendarName))
+                    .findFirst().get();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List<Event> items = events.getItems();
-        if (items.isEmpty()) {
-            System.out.println("No upcoming events found.");
-        } else {
-            System.out.println("Upcoming events");
-            for (Event event : items) {
-                DateTime start = event.getStart().getDateTime();
-                if (start == null) {
-                    start = event.getStart().getDate();
-                }
-                System.out.printf("%s (%s)\n", event.getSummary(), start);
-            }
+        return entry;
+    }
+
+    private String calendarId() {
+        return defaultCalendar().getId();
+    }
+
+    public List<Event> upcomingEvents() {
+        String id = calendarId();
+        DateTime now = new DateTime(System.currentTimeMillis());
+        List<Event> events = null;
+        try {
+             events = calendar.events().list(id)
+                     .setTimeMin(now)
+                     .execute().getItems();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+
+    public void test() {
+        try {
+            List<CalendarListEntry> items = calendar.calendarList().list().execute().getItems();
+//            items.forEach(i -> System.out.println(toPrettyString(i)));
+
+//            System.out.println(calendar.calendars().get("uk.ukrainian#holiday@group.v.calendar.google.com").execute());
+            upcomingEvents().forEach(i -> System.out.println(toPrettyString(i)));
+            System.out.println();
+            System.out.println(toPrettyString(nextEvent()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
+    public Either<Object, Event> liveEvent() {
+        Event event = nextEvent();
 
+        if (event.getStart().getDateTime().getValue() <= new DateTime(System.currentTimeMillis()).getValue()) {
+            return Either.right(event);
+        }else
+            return Either.left(null);
+    }
 
-    private String  toPrettyString(CalendarListEntry entry) {
-        return entry.getId() +" "+ entry.getSummary() +"\n";
+    public Event nextEvent() {
+        return upcomingEvents().get(upcomingEvents().size()-1);
+    }
+
+    private String toPrettyString(CalendarListEntry entry) {
+        return entry.getId() +" "+ entry.getSummary();
+    }
+
+    private String toPrettyString(Event event) {
+        return event.getId() +" "+ event.getSummary() +" "+ event.getStart().getDateTime() +" - "+ event.getEnd().getDateTime();
     }
 
 }

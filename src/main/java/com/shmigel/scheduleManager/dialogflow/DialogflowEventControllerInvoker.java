@@ -1,5 +1,6 @@
 package com.shmigel.scheduleManager.dialogflow;
 
+import com.shmigel.scheduleManager.dialogflow.model.MethodWrapper;
 import com.shmigel.scheduleManager.dialogflow.model.Request;
 import com.shmigel.scheduleManager.dialogflow.model.Response;
 import org.slf4j.Logger;

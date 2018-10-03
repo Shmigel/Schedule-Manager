@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -37,35 +36,6 @@ public class ScheduleManagerApplicationTests {
 	@Autowired
 	private Auth0TokenService tokenManager;
 
-	private static String prepareJson = "{\n" +
-			"  \"responseId\": \"b0e90e8a-344e-43bc-a5b7-e81e47731d68\",\n" +
-			"  \"queryResult\": {\n" +
-			"    \"queryText\": \"do test\",\n" +
-			"    \"action\": \"TEST_EVENT\",\n" +
-			"    \"parameters\": {},\n" +
-			"    \"allRequiredParamsPresent\": true,\n" +
-			"    \"fulfillmentMessages\": [\n" +
-			"      {\n" +
-			"        \"text\": {\n" +
-			"          \"text\": [\n" +
-			"            \"\"\n" +
-			"          ]\n" +
-			"        }\n" +
-			"      }\n" +
-			"    ],\n" +
-			"    \"intent\": {\n" +
-			"      \"name\": \"projects/schedule-manager-a6180/agent/intents/02c8eae7-46f7-45f9-ab4d-d8c9e5204243\",\n" +
-			"      \"displayName\": \"OnResponse\"\n" +
-			"    },\n" +
-			"    \"intentDetectionConfidence\": 1,\n" +
-			"    \"languageCode\": \"en\"\n" +
-			"  },\n" +
-			"  \"originalDetectIntentRequest\": {\n" +
-			"    \"payload\": {}\n" +
-			"  },\n" +
-			"  \"session\": \"projects/schedule-manager-a6180/agent/sessions/8db5ea0d-f5c9-acf2-ee17-f6067f29dbb6\"\n" +
-			"}";
-
 	private String jsonOf(Object o) {
 		String json = "";
 		try {
@@ -76,7 +46,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "IBmadoOrIf6LQmfT4ssM-zv6QOoVgNLV";
+	private String token = "8LG9rKHoOUsqmdg-DZTdB2UET62661RV";
 
 	private Request request(String action) {
 		return new Request(
@@ -99,15 +69,19 @@ public class ScheduleManagerApplicationTests {
 	}
 
 	@Test
-	public void jsonMapping() throws IOException {
-		Request request = new ObjectMapper().readValue(prepareJson, Request.class);
-		logger.info("Get object: {}", request.toString());
-	}
-
-	@Test
 	public void baseController() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
 				.content(jsonOf(request("CREATE_SCHEDULE"))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		assertNotNull(contentAsString);
+		logger.info("Return from post request {}", contentAsString);
+	}
+
+	@Test
+	public void liveController() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(request("LIVE_EVENT"))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		assertNotNull(contentAsString);
