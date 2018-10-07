@@ -73,13 +73,18 @@ public class Auth0TokenService {
         return Try.of(request::asJson).getOrElseThrow(() -> new RuntimeException());
     }
 
-    public Tuple<String, String> load(String userToken) {
+    public Tuple<String, String> loadTokens(String userToken) {
         String userId = getUserId(userToken);
         String auth0ManagerToken = getAuth0ManagerToken();
 
         Tuple<String, String> tokens = getGoogleTokens(userId, auth0ManagerToken);
         logger.info("userId:"+userId+" access_token:"+tokens.getFirst()+", refresh_token:"+tokens.getSecond());
         return tokens;
+    }
+
+    public String loadRefreshToken(String userToken) {
+        Tuple<String, String> load = loadTokens(userToken);
+        return load.getSecond();
     }
 
     private JSONObject preparedBody() {

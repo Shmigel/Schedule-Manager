@@ -14,7 +14,6 @@ import java.util.Map;
 @EventController
 public class DialogflowEventController {
 
-//    @Lazy
     private final CalendarService calendar;
 
     private final MessagePrepareService messagePrepare;

@@ -12,56 +12,68 @@ import io.vavr.control.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.shmigel.scheduleManager.GoogleException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 
-import java.util.Date;
 import java.util.List;
+
 
 public class CalendarService {
 
-    private Calendar calendar;
+    @Autowired
+    @Lazy
+    private CalendarService calendarService;
+
+    private Calendar googleCalendar;
 
     private Logger logger = LoggerFactory.getLogger(CalendarService.class);
 
-    private final static String defaultCalendarName = "ScheduleManagers' Calendar";
 
+    private final static String defaultCalendarName = "ScheduleManagers' Calendar";
     public CalendarService(JacksonFactory jacksonFactory,
                            NetHttpTransport httpTransport, GoogleCredential googleCredential) {
-        calendar = new Calendar(httpTransport, jacksonFactory, googleCredential);
+        googleCalendar = new Calendar.Builder(httpTransport, jacksonFactory, googleCredential)
+                .setApplicationName("scheduleManager").build();
     }
 
     /**
-     * Return object of managed calendar
+     * Load all and find new object of managed google calendar
      *
-     * @throws GoogleException if couldn't either load calendars or find managed calendar
-     * @return object of managed calendar
+     * @throws GoogleException if couldn't either load calendars or find managed googleCalendar
+     * @return object of managed googleCalendar
      */
     private CalendarListEntry managedCalendar() {
-        List<CalendarListEntry> list = Try.of(() -> calendar.calendarList().list().execute())
+        List<CalendarListEntry> list = Try.of(() -> googleCalendar.calendarList().list().execute())
                 .getOrElseThrow(GoogleException::new).getItems();
 
         return list.stream().filter(i -> i.getSummary().equals(defaultCalendarName))
                 .findFirst().orElseThrow(GoogleException::new);
     }
 
+    private ThreadLocal<String> calendarIdCache = new ThreadLocal<>();
+
     /**
-     * Wrapper for {@link CalendarService#managedCalendar()}
-     * @return id of base methods' return
+     * Return managed calendars' id with support of {@link ThreadLocal} caching.
      */
     private String calendarId() {
-        return managedCalendar().getId();
+        return Option.of(calendarIdCache.get())
+                .getOrElse(() -> {
+                    calendarIdCache.set(managedCalendar().getId());
+                    return calendarIdCache.get();
+                });
     }
 
     /**
      * Return 4 next event from now, include ongoing event, order by startTime
      * @return list of 4 events
      */
-    private List<Event> upcomingEvents() {
-        String id = calendarId();
-        DateTime now = new DateTime(new Date().getTime());
-
-        return Try.of(() -> calendar.events().list(id)
+    @Cacheable(value = "upcomingEvents", key = "#calendarId")
+    public List<Event> upcomingEvents(String calendarId) {
+        logger.info("Load new upcoming Events");
+        return Try.of(() -> googleCalendar.events().list(calendarId)
                 .setMaxResults(4)
-                .setTimeMin(now)
+                .setTimeMin(now())
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute())
@@ -70,13 +82,13 @@ public class CalendarService {
 
     /**
      * Return live event if present.
-     * Since return from {@link CalendarService#upcomingEvents()} is already ordered by startTime
+     * Since return from {@link CalendarService#upcomingEvents(String userId)} is already ordered by startTime
      * we get first and check if it's ongoing
      *
      * @return live event if present
      */
     public Option<Event> liveEvent() {
-        Event event = upcomingEvents().get(0);
+        Event event = calendarService.upcomingEvents(calendarId()).get(0);
         if (isOngoing(event)) {
             return Option.of(event);
         }
@@ -85,22 +97,17 @@ public class CalendarService {
 
 
     public Event nextEvent() {
-        return upcomingEvents().stream()
+        return calendarService.upcomingEvents(calendarId()).stream()
                 .filter(this::notOngoing).findFirst()
                 .orElseThrow(RuntimeException::new);
     }
 
     private boolean isOngoing(Event event) {
-        return event.getStart().getDateTime().getValue() <= new DateTime(System.currentTimeMillis()).getValue();
+        return event.getStart().getDateTime().getValue() <= now().getValue();
     }
 
     private boolean notOngoing(Event event) {
         return !isOngoing(event);
-    }
-
-    private String toPrettyString(CalendarListEntry entry) {
-        if (entry == null) return "null";
-        return entry.getId() +" "+ entry.getSummary();
     }
 
     private String toPrettyString(Event event) {
@@ -108,10 +115,14 @@ public class CalendarService {
         return event.getSummary() +"\n ("+ event.getStart().getDateTime() +" - "+ event.getEnd().getDateTime() +") "+ event.getId();
     }
 
+    private DateTime now() {
+        return new DateTime(System.currentTimeMillis());
+    }
+
 
     public void allFuncTest() {
-        logger.debug("Load {} calendars", upcomingEvents().size());
-        upcomingEvents().forEach((i) -> System.out.println(toPrettyString(i)));
+        logger.debug("Load {} calendars", calendarService.upcomingEvents(calendarId()).size());
+        calendarService.upcomingEvents(calendarId()).forEach((i) -> System.out.println(toPrettyString(i)));
         logger.debug("Next event {}", nextEvent().getSummary());
         logger.debug("Live event: {}", !liveEvent().isEmpty()? liveEvent().get().getSummary() : "false");
     }

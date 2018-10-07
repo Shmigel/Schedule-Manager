@@ -1,9 +1,9 @@
 package com.shmigel.scheduleManager.config;
 
-import com.google.api.client.auth.oauth2.TokenRequest;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -22,16 +22,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Optional;
 
 @Configuration
 public class GoogleBeanConfiguration {
 
-    /**
-     * Store access and refresh token.
-     * Set at base(/) post handler {@link com.shmigel.scheduleManager.controller.BaseController()}
-     */
-    private Tuple<String, String> tokens;
 
     @Value("${google.clientId}")
     private String clientId;
@@ -42,8 +39,18 @@ public class GoogleBeanConfiguration {
     @Autowired
     private Auth0TokenService tokenManager;
 
-    public void setAuth0Token(String auth0Token) {
-        this.tokens = tokenManager.load(auth0Token);
+    private String refreshToken;
+    private final Map<String, String> tokenCache = new Hashtable<>();
+
+    public void setAuth0Token(String userId, String userToken) {
+        if (tokenCache.containsKey(userId)) {
+            logger.info("from cache: {}", userId);
+            this.refreshToken = tokenCache.get(userId);
+        } else {
+            this.refreshToken = tokenManager.loadRefreshToken(userToken);
+            tokenCache.put(userId, refreshToken);
+            logger.info("from auth0: {}", userId);
+        }
     }
 
     private static Logger logger = LoggerFactory.getLogger(GoogleBeanConfiguration.class);
@@ -51,8 +58,8 @@ public class GoogleBeanConfiguration {
     @Bean
     @Lazy
     @Scope("prototype")
-    GoogleCredential googleCredential(TokenRequest tokenRequest) throws IOException {
-        return new GoogleCredential().setFromTokenResponse(tokenRequest.execute());
+    GoogleCredential googleCredential(TokenResponse tokenResponse) {
+        return new GoogleCredential().setFromTokenResponse(tokenResponse);
     }
 
     @Bean
@@ -67,9 +74,9 @@ public class GoogleBeanConfiguration {
     @Bean
     @Lazy
     @Scope("prototype")
-    GoogleRefreshTokenRequest tokenRequest(JacksonFactory factory,
-                                           NetHttpTransport httpTransport) {
-        return new GoogleRefreshTokenRequest(httpTransport, factory , tokens.getSecond(), clientId, clientSecret);
+    GoogleTokenResponse tokenRequest(JacksonFactory factory,
+                                     NetHttpTransport httpTransport) throws IOException {
+        return new GoogleRefreshTokenRequest(httpTransport, factory , refreshToken, clientId, clientSecret).execute();
     }
 
 }

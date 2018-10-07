@@ -15,14 +15,18 @@ public class User {
 
     private String locale;
 
+    private String userId;
+
     @JsonCreator
     public User(
             @JsonProperty("lastSeen") String lastSeen,
             @JsonProperty("accessToken") String accessToken,
-            @JsonProperty("locale") String locale) {
+            @JsonProperty("locale") String locale,
+            @JsonProperty("userId") String userId) {
         this.lastSeen = lastSeen;
         this.accessToken = accessToken;
         this.locale = locale;
+        this.userId = userId;
     }
 
     public User() {

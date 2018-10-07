@@ -5,6 +5,7 @@ import com.shmigel.scheduleManager.config.GoogleBeanConfiguration;
 import com.shmigel.scheduleManager.dialogflow.DialogflowEventControllerInvoker;
 import com.shmigel.scheduleManager.dialogflow.model.Request;
 import com.shmigel.scheduleManager.dialogflow.model.Response;
+import com.shmigel.scheduleManager.dialogflow.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,10 @@ public class BaseController {
     public ResponseEntity<Response> baseController(@RequestBody String body, @RequestHeader HttpHeaders headers) {
         logger.debug("Post request with headers: {}, and body: {}", headers, body);
         Request request = getRequest(body);
-        Optional<String> accessToken = Optional.ofNullable(request.getOriginalDetectIntentRequest().getPayload().getUser().getAccessToken());
-        configuration.setAuth0Token(accessToken.orElseThrow(RuntimeException::new));
+
+        User user = request.getOriginalDetectIntentRequest().getPayload().getUser();
+        configuration.setAuth0Token(user.getUserId(), user.getAccessToken());
+
         Response response = controllerInvoker.invokeProperMethod(request);
         logger.debug("Response: {}", response);
         return ResponseEntity.ok(response);
