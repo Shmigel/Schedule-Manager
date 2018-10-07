@@ -4,6 +4,7 @@ import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
 import com.shmigel.scheduleManager.dialogflow.model.Response;
+import com.shmigel.scheduleManager.service.MessagePrepareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
@@ -13,9 +14,17 @@ import java.util.Map;
 @EventController
 public class DialogflowEventController {
 
+//    @Lazy
+    private final CalendarService calendar;
+
+    private final MessagePrepareService messagePrepare;
+
     @Lazy
     @Autowired
-    private CalendarService calendar;
+    public DialogflowEventController(CalendarService calendar, MessagePrepareService messagePrepare) {
+        this.calendar = calendar;
+        this.messagePrepare = messagePrepare;
+    }
 
     @EventMapping("TEST_EVENT")
     public Response testEvent() {
@@ -25,12 +34,12 @@ public class DialogflowEventController {
 
     @EventMapping("LIVE_EVENT")
     public Response liveEvent() {
-        return new Response(calendar.liveEvent().toString());
+        return messagePrepare.liveEventMessage(calendar.liveEvent());
     }
 
     @EventMapping("UPCOMING_EVENT")
     public Response upcomingEvent() {
-        return new Response(calendar.nextEvent().toString());
+        return messagePrepare.upcomingEventMessage(calendar.nextEvent());
     }
 
     @EventMapping("ADD_EVENT")

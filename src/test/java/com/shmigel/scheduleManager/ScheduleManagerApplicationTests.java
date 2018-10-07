@@ -46,7 +46,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "8LG9rKHoOUsqmdg-DZTdB2UET62661RV";
+	private String token = "qG_kRrs-oxGlLThbuFepBLlZykQ1nWiR";
 
 	private Request request(String action) {
 		return new Request(
@@ -71,7 +71,7 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void baseController() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(request("CREATE_SCHEDULE"))))
+				.content(jsonOf(request("TEST_EVENT"))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		assertNotNull(contentAsString);
