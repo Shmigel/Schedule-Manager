@@ -14,22 +14,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 public class BaseController {
 
     private static Logger logger = LoggerFactory.getLogger(BaseController.class);
 
-    @Autowired
-    private DialogflowEventControllerInvoker controllerInvoker;
+    private final DialogflowEventControllerInvoker controllerInvoker;
+
+    private final GoogleBeanConfiguration configuration;
 
     @Autowired
-    private GoogleBeanConfiguration configuration;
+    public BaseController(DialogflowEventControllerInvoker controllerInvoker, GoogleBeanConfiguration configuration) {
+        this.controllerInvoker = controllerInvoker;
+        this.configuration = configuration;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<?> testGetMethod(@RequestParam(required = false) Map<String, String> parameters) {

@@ -37,10 +37,6 @@ public class Auth0TokenService {
     @Value("${auth0.audience}")
     private String audience;
 
-    @Autowired
-    @Lazy
-    private GoogleRefreshTokenRequest tokenRequest;
-
     private static Logger logger = LoggerFactory.getLogger(Auth0TokenService.class);
 
     private String getUserId(String auth0Token) {

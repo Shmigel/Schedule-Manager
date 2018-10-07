@@ -21,14 +21,17 @@ import java.util.List;
 
 public class CalendarService {
 
-    @Autowired
-    @Lazy
     private CalendarService calendarService;
+
+    @Lazy
+    @Autowired
+    public void setCalendarService(CalendarService calendarService) {
+        this.calendarService = calendarService;
+    }
 
     private Calendar googleCalendar;
 
     private Logger logger = LoggerFactory.getLogger(CalendarService.class);
-
 
     private final static String defaultCalendarName = "ScheduleManagers' Calendar";
     public CalendarService(JacksonFactory jacksonFactory,
