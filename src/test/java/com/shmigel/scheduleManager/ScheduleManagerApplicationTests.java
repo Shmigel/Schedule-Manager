@@ -47,7 +47,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "F5MmhPjMggcKr3qp68gQ3RjbvXydLyeP";
+	private String token = "UMHg02xI3DUM7hko0hV-0RLtX0n-BfFK";
 
 	private Request request(String action) {
 		return new Request(
@@ -80,16 +80,6 @@ public class ScheduleManagerApplicationTests {
 	}
 
 	@Test
-	public void liveController() throws Exception {
-		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(request("LIVE_EVENT"))))
-				.andExpect(status().isOk()).andReturn();
-		String contentAsString = result.getResponse().getContentAsString();
-		assertNotNull(contentAsString);
-		logger.info("Return from post request {}", contentAsString);
-	}
-
-	@Test
 	public void control() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
 				.content(jsonOf(request("TEST_EVENT"))))
@@ -106,12 +96,21 @@ public class ScheduleManagerApplicationTests {
 	}
 
 	@Test
-	public void rawJsonTest() throws Exception {
+	public void upcomingEventTest() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(requestWithParameters("UPCOMING_EVENT", Collections.singletonMap("EMAIL", "sh@mail.com")))))
+				.content(jsonOf(request("UPCOMING_EVENT"))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
-		logger.info("Return from post request {}", contentAsString);
+		logger.info("Return post request {}", contentAsString);
+	}
+
+	@Test
+	public void liveEventTest() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(request("LIVE_EVENT"))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from request {}", contentAsString);
 	}
 
 }

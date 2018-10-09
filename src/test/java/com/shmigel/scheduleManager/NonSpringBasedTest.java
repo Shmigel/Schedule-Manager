@@ -1,5 +1,6 @@
 package com.shmigel.scheduleManager;
 
+import com.shmigel.scheduleManager.model.SpeechBreakStrength;
 import com.shmigel.scheduleManager.service.Speech;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -7,6 +8,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.springframework.boot.test.context.assertj.ApplicationContextAssert;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,8 +34,24 @@ public class NonSpringBasedTest {
     @Test
     public void test() {
         DateTime time = new DateTime();
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("EE, MMMM dd");
         System.out.println(time.toString(formatter));
+    }
+
+    @Test
+    public void t() {
+        DateTime dateTime = new DateTime(System.currentTimeMillis());
+        DateTimeFormatter monthDay = DateTimeFormat.forPattern("MMMM dd");
+        DateTimeFormatter hourMinute = DateTimeFormat.forPattern("HH:mm");
+        String build = new Speech().say("Your next event of " + "TEST_SUMMARY")
+                .say("starts at")
+                .sayAsTime("hm24", dateTime.toString(hourMinute))
+                .say("on the")
+                .sayAsDate("dd", String.valueOf(dateTime.getDayOfWeek()))
+                .pause("300ms", SpeechBreakStrength.STRONG).sayAsDate("mmdd", dateTime.toString(monthDay))
+                .build();
+
+        System.out.println(build);
     }
 
 }
