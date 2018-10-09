@@ -113,11 +113,6 @@ public class CalendarService {
         return !isOngoing(event);
     }
 
-    private String toPrettyString(Event event) {
-        if (event == null) return "null";
-        return event.getSummary() +"\n ("+ event.getStart().getDateTime() +" - "+ event.getEnd().getDateTime() +") "+ event.getId();
-    }
-
     private DateTime now() {
         return new DateTime(System.currentTimeMillis());
     }
@@ -125,7 +120,7 @@ public class CalendarService {
 
     public void allFuncTest() {
         logger.debug("Load {} calendars", calendarService.upcomingEvents(calendarId()).size());
-        calendarService.upcomingEvents(calendarId()).forEach((i) -> System.out.println(toPrettyString(i)));
+        calendarService.upcomingEvents(calendarId()).forEach((i) -> System.out.println(i.getId() + i.getSummary()));
         logger.debug("Next event {}", nextEvent().getSummary());
         logger.debug("Live event: {}", !liveEvent().isEmpty()? liveEvent().get().getSummary() : "false");
     }

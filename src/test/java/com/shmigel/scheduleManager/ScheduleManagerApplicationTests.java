@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shmigel.scheduleManager.dialogflow.model.*;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
+import com.shmigel.scheduleManager.service.Speech;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -107,7 +108,7 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void rawJsonTest() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(requestWithParameters("ADD_USER", Collections.singletonMap("EMAIL", "sh@mail.com")))))
+				.content(jsonOf(requestWithParameters("UPCOMING_EVENT", Collections.singletonMap("EMAIL", "sh@mail.com")))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from post request {}", contentAsString);
