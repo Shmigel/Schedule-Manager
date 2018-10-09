@@ -47,7 +47,7 @@ public class DialogflowEventController {
     }
 
     @EventMapping("CREATE_SCHEDULE")
-    public Response createSchedule() throws IOException {
+    public Response createSchedule() {
         return new Response("Schedule's created. Currently not supported");
     }
 

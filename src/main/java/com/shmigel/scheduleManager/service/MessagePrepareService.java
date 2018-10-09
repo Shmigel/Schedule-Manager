@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 public class MessagePrepareService {
 
     public Response liveEventMessage(Option<Event> event) {
-        return new Response("");
+        if (!event.isEmpty()) {
+            return new Response("Now you have lecture of "+ event.get().getSummary() +"in"+ event.get().getDescription());
+        } else {
+            return new Response("You are free now. Breathe free");
+        }
     }
 
     public Response upcomingEventMessage(Event event) {
-        return new Response("");
-    }
-
-    private String prettyEvent(Event event) {
-        return event.getSummary();
+        return new Response("Your next event of "+ event.getSummary() +" starts at"+ event.getStart().getDateTime().getValue());
     }
 
 }

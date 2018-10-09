@@ -43,12 +43,10 @@ public class GoogleBeanConfiguration {
 
     public void setAuth0Token(String userId, String userToken) {
         if (tokenCache.containsKey(userId)) {
-            logger.info("from cache: {}", userId);
             this.refreshToken = tokenCache.get(userId);
         } else {
             this.refreshToken = tokenManager.loadRefreshToken(userToken);
             tokenCache.put(userId, refreshToken);
-            logger.info("from auth0: {}", userId);
         }
     }
 
