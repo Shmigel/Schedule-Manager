@@ -9,7 +9,7 @@ public enum DateTimeFormatters {
     monthDay(DateTimeFormat.forPattern("MMMM dd")),
     hourMinute(DateTimeFormat.forPattern("HH:mm"));
 
-    DateTimeFormatter formatter;
+    private DateTimeFormatter formatter;
 
     DateTimeFormatters(DateTimeFormatter formatter) {
         this.formatter = formatter;

@@ -46,13 +46,18 @@ public class DialogflowEventController {
         return new Response("Event's scheduled. Currently not supported");
     }
 
-    @EventMapping("CREATE_SCHEDULE")
-    public Response createSchedule() {
-        return new Response("Schedule's created. Currently not supported");
+    @EventMapping("TODAY_EVENTS")
+    public Response todayEvents() {
+        return messagePrepare.todayEvents(calendar.todayEvents());
+    }
+
+    @EventMapping("TOMORROW_EVENTS")
+    public Response tomorrowEvents() {
+        return messagePrepare.tomorrowEvents(calendar.tomorrowEvents());
     }
 
     @EventMapping("ADD_USER")
-    public Response addUser(Map<String, String> parameters) {
+    public Response addUser() {
         return new Response("User's added. Currently not supported");
     }
 }

@@ -47,7 +47,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "UMHg02xI3DUM7hko0hV-0RLtX0n-BfFK";
+	private String token = "R05CjIKGfxjBtKmVedkjOYxUdBBUv50n";
 
 	private Request request(String action) {
 		return new Request(
@@ -108,6 +108,24 @@ public class ScheduleManagerApplicationTests {
 	public void liveEventTest() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
 				.content(jsonOf(request("LIVE_EVENT"))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from request {}", contentAsString);
+	}
+
+	@Test
+	public void todayEventsTest() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(request("TODAY_EVENTS"))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from request {}", contentAsString);
+	}
+
+	@Test
+	public void tomorrowEventsTest() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(request("TOMORROW_EVENTS"))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from request {}", contentAsString);

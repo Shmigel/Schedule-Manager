@@ -7,6 +7,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
+import com.shmigel.scheduleManager.util.DateTimeUtil;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class CalendarService {
@@ -31,6 +33,9 @@ public class CalendarService {
 
     private Calendar googleCalendar;
 
+    @Autowired
+    private DateTimeUtil dateTimeUtil;
+
     private Logger logger = LoggerFactory.getLogger(CalendarService.class);
 
     private final static String defaultCalendarName = "ScheduleManagers' Calendar";
@@ -38,6 +43,19 @@ public class CalendarService {
                            NetHttpTransport httpTransport, GoogleCredential googleCredential) {
         googleCalendar = new Calendar.Builder(httpTransport, jacksonFactory, googleCredential)
                 .setApplicationName("scheduleManager").build();
+    }
+
+    private ThreadLocal<String> calendarIdCache = new ThreadLocal<>();
+
+    /**
+     * Return managed calendars' id with support of {@link ThreadLocal} caching, {@link #}.
+     */
+    private String calendarId() {
+        return Option.of(calendarIdCache.get())
+                .getOrElse(() -> {
+                    calendarIdCache.set(managedCalendar().getId());
+                    return calendarIdCache.get();
+                });
     }
 
     /**
@@ -54,33 +72,30 @@ public class CalendarService {
                 .findFirst().orElseThrow(GoogleException::new);
     }
 
-    private ThreadLocal<String> calendarIdCache = new ThreadLocal<>();
-
-    /**
-     * Return managed calendars' id with support of {@link ThreadLocal} caching.
-     */
-    private String calendarId() {
-        return Option.of(calendarIdCache.get())
-                .getOrElse(() -> {
-                    calendarIdCache.set(managedCalendar().getId());
-                    return calendarIdCache.get();
-                });
-    }
-
     /**
      * Return 4 next event from now, include ongoing event, order by startTime
      * @return list of 4 events
      */
     @Cacheable(value = "upcomingEvents", key = "#calendarId")
     public List<Event> upcomingEvents(String calendarId) {
-        logger.info("Load new upcoming Events");
+        logger.info("Loadind new upcoming Events");
         return Try.of(() -> googleCalendar.events().list(calendarId)
-                .setMaxResults(4)
-                .setTimeMin(now())
+                .setMaxResults(10)
+                .setTimeMin(dateTimeUtil.gNow())
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute())
                 .getOrElseThrow(GoogleException::new).getItems();
+    }
+
+    public List<Event> todayEvents() {
+        return calendarService.upcomingEvents(calendarId())
+                .stream().filter(dateTimeUtil::isToday).collect(Collectors.toList());
+    }
+
+    public List<Event> tomorrowEvents() {
+        return calendarService.upcomingEvents(calendarId())
+                .stream().filter(dateTimeUtil::isTomorrow).collect(Collectors.toList());
     }
 
     /**
@@ -92,7 +107,7 @@ public class CalendarService {
      */
     public Option<Event> liveEvent() {
         Event event = calendarService.upcomingEvents(calendarId()).get(0);
-        if (isOngoing(event)) {
+        if (dateTimeUtil.isOngoing(event)) {
             return Option.of(event);
         }
         return Option.none();
@@ -101,27 +116,14 @@ public class CalendarService {
 
     public Event nextEvent() {
         return calendarService.upcomingEvents(calendarId()).stream()
-                .filter(this::notOngoing).findFirst()
+                .filter(dateTimeUtil::notOngoing).findFirst()
                 .orElseThrow(RuntimeException::new);
     }
-
-    private boolean isOngoing(Event event) {
-        return event.getStart().getDateTime().getValue() <= now().getValue();
-    }
-
-    private boolean notOngoing(Event event) {
-        return !isOngoing(event);
-    }
-
-    private DateTime now() {
-        return new DateTime(System.currentTimeMillis());
-    }
-
 
     public void allFuncTest() {
         logger.debug("Load {} calendars", calendarService.upcomingEvents(calendarId()).size());
         calendarService.upcomingEvents(calendarId()).forEach((i) -> System.out.println(i.getId() + i.getSummary()));
-        logger.debug("Next event {}", nextEvent().getSummary());
-        logger.debug("Live event: {}", !liveEvent().isEmpty()? liveEvent().get().getSummary() : "false");
+        logger.debug("Next event {}",nextEvent().getSummary());
+        logger.debug("Live event: {}", !liveEvent().isEmpty()? liveEvent().get().getSummary(): "false");
     }
 }

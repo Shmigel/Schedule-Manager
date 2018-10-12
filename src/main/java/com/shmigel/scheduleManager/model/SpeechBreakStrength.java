@@ -4,7 +4,7 @@ public enum SpeechBreakStrength {
     NONE("none"), X_WEAK("x-weak"), WEAK("WEAK"),
     MEDIUM("medium"), STRONG("strong"), X_STRONG("x-strong");
 
-    String value;
+    private String value;
 
     SpeechBreakStrength(String value) {
         this.value = value;
