@@ -5,10 +5,11 @@ import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
 import com.shmigel.scheduleManager.dialogflow.model.Response;
 import com.shmigel.scheduleManager.service.MessagePrepareService;
+import com.shmigel.scheduleManager.util.DateTimeUtil;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import java.io.IOException;
 import java.util.Map;
 
 @EventController
@@ -18,11 +19,16 @@ public class DialogflowEventController {
 
     private final MessagePrepareService messagePrepare;
 
+    private final  DateTimeUtil dateTimeUtil;
+
     @Lazy
     @Autowired
-    public DialogflowEventController(CalendarService calendar, MessagePrepareService messagePrepare) {
+    public DialogflowEventController(CalendarService calendar,
+                                     MessagePrepareService messagePrepare,
+                                     DateTimeUtil dateTimeUtil) {
         this.calendar = calendar;
         this.messagePrepare = messagePrepare;
+        this.dateTimeUtil = dateTimeUtil;
     }
 
     @EventMapping("TEST_EVENT")
@@ -46,14 +52,10 @@ public class DialogflowEventController {
         return new Response("Event's scheduled. Currently not supported");
     }
 
-    @EventMapping("TODAY_EVENTS")
-    public Response todayEvents() {
-        return messagePrepare.todayEvents(calendar.todayEvents());
-    }
-
-    @EventMapping("TOMORROW_EVENTS")
-    public Response tomorrowEvents() {
-        return messagePrepare.tomorrowEvents(calendar.tomorrowEvents());
+    @EventMapping("DAY_EVENTS")
+    public Response dayEvents(Map<String, String> parameters) {
+        DateTime time = new DateTime(parameters.getOrDefault("date", dateTimeUtil.now().toString()));
+        return messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth()));
     }
 
     @EventMapping("ADD_USER")

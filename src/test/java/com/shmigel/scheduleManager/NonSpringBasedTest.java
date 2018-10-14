@@ -2,7 +2,9 @@ package com.shmigel.scheduleManager;
 
 import com.shmigel.scheduleManager.model.SpeechBreakStrength;
 import com.shmigel.scheduleManager.service.Speech;
+import com.shmigel.scheduleManager.util.DateTimeUtil;
 import org.joda.time.DateTime;
+import org.joda.time.chrono.ISOChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
@@ -52,6 +54,11 @@ public class NonSpringBasedTest {
                 .build();
 
         System.out.println(build);
+    }
+
+    @Test
+    public void dt() {
+        System.out.println(new DateTime().plusDays(2));
     }
 
 }

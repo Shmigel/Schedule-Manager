@@ -54,29 +54,17 @@ public class MessagePrepareService {
                 .build());
     }
 
-    public Response todayEvents(List<Event> todayEvents) {
+    public Response dayEvents(List<Event> todayEvents) {
         if (!todayEvents.isEmpty()) {
-            return new Response(new Speech().say("Here is your brief today plan.").pause("300ms")
-                    .say("You have " + todayEvents.size() + " events today,")
+            DateTime start = dateTimeUtil.toJDateTime(todayEvents.get(0).getStart().getDateTime());
+            return new Response(new Speech().say("Here is your brief plan for "+ start.toString(DateTimeFormatters.monthDay.formatter())).pause("300ms")
+                    .say("You have " + todayEvents.size() + " events,")
                     .say("which start at "+ dateTimeUtil.startTime(todayEvents.get(0)))
                     .say("and will end up to "+ dateTimeUtil.endTime(todayEvents.get(todayEvents.size()-1)))
                     .say("Good luck")
                     .build());
         } else
             return new Response("It looks like you're free all day. Just take a rest");
-    }
-
-    public Response tomorrowEvents(List<Event> tomorrowEvents) {
-        if (!tomorrowEvents.isEmpty()) {
-            return new Response(new Speech()
-                    .say("Here is your short overview of tomorrow.").pause("300ms")
-                    .say("You have " + tomorrowEvents.size() + " events tomorrow,")
-                    .say("which start at "+ dateTimeUtil.startTime(tomorrowEvents.get(0)))
-                    .say("and will end up to "+ dateTimeUtil.endTime(tomorrowEvents.get(tomorrowEvents.size()-1)))
-                    .say("Good luck")
-                    .build());
-        } else
-            return new Response("Now it's nothing planed for tomorrow. Please check later");
     }
 
     private String toPrettyString(Event event) {

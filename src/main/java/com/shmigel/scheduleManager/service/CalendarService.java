@@ -8,6 +8,7 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
@@ -18,8 +19,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 public class CalendarService {
 
@@ -50,7 +49,7 @@ public class CalendarService {
     /**
      * Return managed calendars' id with support of {@link ThreadLocal} caching, {@link #}.
      */
-    private String calendarId() {
+    public String calendarId() {
         return Option.of(calendarIdCache.get())
                 .getOrElse(() -> {
                     calendarIdCache.set(managedCalendar().getId());
@@ -72,30 +71,34 @@ public class CalendarService {
                 .findFirst().orElseThrow(GoogleException::new);
     }
 
-    /**
-     * Return 4 next event from now, include ongoing event, order by startTime
-     * @return list of 4 events
-     */
-    @Cacheable(value = "upcomingEvents", key = "#calendarId")
-    public List<Event> upcomingEvents(String calendarId) {
-        logger.info("Loadind new upcoming Events");
+    public List<Event> upcomingEvents(String calendarId, int maxResult,
+                                      DateTime start, DateTime end) {
+        logger.info("Loading new upcoming Events");
         return Try.of(() -> googleCalendar.events().list(calendarId)
-                .setMaxResults(10)
-                .setTimeMin(dateTimeUtil.gNow())
+                .setTimeMin(start)
+                .setTimeMax(end)
+                .setMaxResults(maxResult)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
-                .execute())
-                .getOrElseThrow(GoogleException::new).getItems();
+                .execute()).getOrElseThrow(GoogleException::new)
+                .getItems();
     }
 
-    public List<Event> todayEvents() {
-        return calendarService.upcomingEvents(calendarId())
-                .stream().filter(dateTimeUtil::isToday).collect(Collectors.toList());
+    @Cacheable(value = "upcomingEvents")
+    public List<Event> upcomingEvents(String calendarId) {
+        org.joda.time.DateTime day = dateTimeUtil.now().plusDays(5);
+        return calendarService.upcomingEvents(calendarId, 10, dateTimeUtil.gNow(),
+                dateTimeUtil.toGDateTime(day));
     }
 
-    public List<Event> tomorrowEvents() {
-        return calendarService.upcomingEvents(calendarId())
-                .stream().filter(dateTimeUtil::isTomorrow).collect(Collectors.toList());
+    public List<Event> dayEvents(int dayOfMount) {
+        return dayEvents(dayOfMount, calendarId());
+    }
+
+    @Cacheable(value = "dayEvents")
+    public List<Event> dayEvents(int dayOfMount, String calendarId) {
+        Tuple2<DateTime, DateTime> dayPeriod = dateTimeUtil.dayPeriod(dayOfMount);
+        return calendarService.upcomingEvents(calendarId(), 10, dayPeriod._1, dayPeriod._2);
     }
 
     /**

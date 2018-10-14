@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shmigel.scheduleManager.dialogflow.model.*;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
 import com.shmigel.scheduleManager.service.Speech;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "R05CjIKGfxjBtKmVedkjOYxUdBBUv50n";
+	private String token = "xe9gmbcsEDy95L4w5TFO1zPkp1Y2nUs1";
 
 	private Request request(String action) {
 		return new Request(
@@ -114,18 +115,9 @@ public class ScheduleManagerApplicationTests {
 	}
 
 	@Test
-	public void todayEventsTest() throws Exception {
+	public void dayEventsTest() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(request("TODAY_EVENTS"))))
-				.andExpect(status().isOk()).andReturn();
-		String contentAsString = result.getResponse().getContentAsString();
-		logger.info("Return from request {}", contentAsString);
-	}
-
-	@Test
-	public void tomorrowEventsTest() throws Exception {
-		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(request("TOMORROW_EVENTS"))))
+				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", new DateTime().minusDays(3).toString())))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from request {}", contentAsString);
