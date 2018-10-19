@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CalendarService {
 
@@ -49,7 +50,7 @@ public class CalendarService {
     /**
      * Return managed calendars' id with support of {@link ThreadLocal} caching, {@link #}.
      */
-    public String calendarId() {
+    private String calendarId() {
         return Option.of(calendarIdCache.get())
                 .getOrElse(() -> {
                     calendarIdCache.set(managedCalendar().getId());
@@ -99,6 +100,10 @@ public class CalendarService {
     public List<Event> dayEvents(int dayOfMount, String calendarId) {
         Tuple2<DateTime, DateTime> dayPeriod = dateTimeUtil.dayPeriod(dayOfMount);
         return calendarService.upcomingEvents(calendarId(), 10, dayPeriod._1, dayPeriod._2);
+    }
+
+    public Optional<Event> event(int dayOfMounth, int position) {
+        return Try.of(() -> dayEvents(dayOfMounth).get(position)).toJavaOptional();
     }
 
     /**

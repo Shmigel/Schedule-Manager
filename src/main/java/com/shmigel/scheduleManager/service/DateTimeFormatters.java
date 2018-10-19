@@ -5,9 +5,9 @@ import org.joda.time.format.DateTimeFormatter;
 
 public enum DateTimeFormatters {
 
-    dayOfWeak(DateTimeFormat.forPattern("EEEE")),
-    monthDay(DateTimeFormat.forPattern("MMMM dd")),
-    hourMinute(DateTimeFormat.forPattern("HH:mm"));
+    dayOfWeak(DateTimeFormat.forPattern("EEEE")),   // Monday
+    monthDay(DateTimeFormat.forPattern("MMMM dd")), // October 15
+    hourMinute(DateTimeFormat.forPattern("HH:mm")); // 12:00
 
     private DateTimeFormatter formatter;
 

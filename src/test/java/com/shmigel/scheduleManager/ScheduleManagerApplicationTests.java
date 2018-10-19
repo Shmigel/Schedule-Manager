@@ -2,9 +2,16 @@ package com.shmigel.scheduleManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.shmigel.scheduleManager.dialogflow.model.*;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
+import com.shmigel.scheduleManager.service.CalendarService;
+import com.shmigel.scheduleManager.service.MessagePrepareService;
 import com.shmigel.scheduleManager.service.Speech;
+import com.shmigel.scheduleManager.util.DateTimeUtil;
+import io.vavr.Tuple2;
+import io.vavr.control.Option;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +33,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,6 +48,13 @@ public class ScheduleManagerApplicationTests {
 	@Autowired
 	private Auth0TokenService tokenManager;
 
+	@Autowired
+	private ApplicationContext context;
+
+	@Lazy
+	@Autowired
+	private CalendarService calendarService;
+
 	private String jsonOf(Object o) {
 		String json = "";
 		try {
@@ -48,7 +65,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "xe9gmbcsEDy95L4w5TFO1zPkp1Y2nUs1";
+	private String token = "Y5yClhj7VKsKp6KUV7K31K2db5vTXf9s";
 
 	private Request request(String action) {
 		return new Request(
@@ -121,6 +138,26 @@ public class ScheduleManagerApplicationTests {
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from request {}", contentAsString);
+	}
+
+	@Test
+	public void test() {
+		MessagePrepareService bean = context.getBean(MessagePrepareService.class);
+		DateTimeUtil bean1 = context.getBean(DateTimeUtil.class);
+
+		Tuple2<com.google.api.client.util.DateTime, com.google.api.client.util.DateTime> dayPeriod
+				= bean1.dayPeriod(23);
+
+		Event test_event = new Event().setSummary("Test event").setDescription("author: Shmigel\n place: kc-2")
+				.setStart(new EventDateTime().setDateTime(dayPeriod._1))
+				.setEnd(new EventDateTime().setDateTime(dayPeriod._2));
+
+		Response response = bean.upcomingEventMessage(test_event);
+
+		System.out.println(response);
+
+		Optional<Event> event = calendarService.event(19, 0);
+		System.out.println(event.map(i -> i));
 	}
 
 }

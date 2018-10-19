@@ -58,6 +58,13 @@ public class DialogflowEventController {
         return messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth()));
     }
 
+    @EventMapping("EVENT")
+    public Response event(Map<String, String> parameters) {
+        DateTime date = new DateTime(parameters.get("date"));
+        int position = Integer.valueOf(parameters.get("number"));
+        return new Response(calendar.event(date.getDayOfMonth(), position).toString());
+    }
+
     @EventMapping("ADD_USER")
     public Response addUser() {
         return new Response("User's added. Currently not supported");

@@ -6,6 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.shmigel.scheduleManager.service.CalendarEventDescriptionParser;
 import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
 import org.slf4j.Logger;
@@ -72,5 +73,11 @@ public class GoogleBeanConfiguration {
                                      NetHttpTransport httpTransport) throws IOException {
         return new GoogleRefreshTokenRequest(httpTransport, factory , refreshToken, clientId, clientSecret).execute();
     }
+
+    @Bean
+    CalendarEventDescriptionParser descriptionParser() {
+        return new CalendarEventDescriptionParser();
+    }
+
 
 }

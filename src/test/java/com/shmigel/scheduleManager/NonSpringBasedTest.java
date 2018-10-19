@@ -1,6 +1,8 @@
 package com.shmigel.scheduleManager;
 
 import com.shmigel.scheduleManager.model.SpeechBreakStrength;
+import com.shmigel.scheduleManager.service.CalendarEventDescriptionParser;
+import com.shmigel.scheduleManager.service.DateTimeFormatters;
 import com.shmigel.scheduleManager.service.Speech;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
 import org.joda.time.DateTime;
@@ -11,6 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.boot.test.context.assertj.ApplicationContextAssert;
+
+import java.util.Map;
+import java.util.Collections;
+import java.util.HashMap;
+
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,8 +43,9 @@ public class NonSpringBasedTest {
     @Test
     public void test() {
         DateTime time = new DateTime();
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("EE, MMMM dd");
-        System.out.println(time.toString(formatter));
+        System.out.println(time.toString(DateTimeFormatters.hourMinute.formatter()));
+        System.out.println(time.toString(DateTimeFormatters.monthDay.formatter()));
+        System.out.println(time.toString(DateTimeFormatters.dayOfWeak.formatter()));
     }
 
     @Test
@@ -57,8 +65,13 @@ public class NonSpringBasedTest {
     }
 
     @Test
-    public void dt() {
-        System.out.println(new DateTime().plusDays(2));
+    public void scalaDescriptionParser() {
+        String preparedDescription = "author: Shmigel \n place: kc-2 \n Leson on something";
+        Map<String, String> split = new CalendarEventDescriptionParser().split(preparedDescription);
+        assertEquals(split.toString(), "{author=Shmigel, place=kc-2}");
+
+        Map<String, String> split1 = new CalendarEventDescriptionParser().split(null);
+        assertEquals(split1.toString(), "{}");
     }
 
 }

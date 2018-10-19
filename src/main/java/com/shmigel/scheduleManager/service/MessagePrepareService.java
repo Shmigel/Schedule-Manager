@@ -13,12 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MessagePrepareService {
 
     @Autowired
     private DateTimeUtil dateTimeUtil;
+
+    @Autowired
+    private CalendarEventDescriptionParser descriptionParser;
 
     public Response liveEventMessage(Option<Event> event) {
         if (!event.isEmpty()) {
@@ -44,6 +48,8 @@ public class MessagePrepareService {
      */
     public Response upcomingEventMessage(Event event) {
         DateTime dateTime = new DateTime(event.getStart().getDateTime().getValue());
+        Map<String, String> parameters = descriptionParser.split(event.getDescription());
+
         return new Response(new Speech().say("Your next event of " + event.getSummary())
                 .say("starts at")
                 .sayAsTime("hm24", dateTime.toString(DateTimeFormatters.hourMinute.formatter()))
@@ -51,20 +57,36 @@ public class MessagePrepareService {
                 .sayAsDate("dd", dateTime.toString(DateTimeFormatters.dayOfWeak.formatter()))
                 .pause("300ms", SpeechBreakStrength.STRONG)
                 .sayAsDate("mmdd", dateTime.toString(DateTimeFormatters.monthDay.formatter()))
+                .point()
+                .sayIf("you author is _,", () -> parameters.get("author"))
+                .sayIf("at place _", () -> parameters.get("place"))
                 .build());
     }
 
-    public Response dayEvents(List<Event> todayEvents) {
-        if (!todayEvents.isEmpty()) {
-            DateTime start = dateTimeUtil.toJDateTime(todayEvents.get(0).getStart().getDateTime());
+    public Response dayEvents(List<Event> dayEvents) {
+        if (!dayEvents.isEmpty()) {
+            DateTime start = dateTimeUtil.toJDateTime(dayEvents.get(0).getStart().getDateTime());
             return new Response(new Speech().say("Here is your brief plan for "+ start.toString(DateTimeFormatters.monthDay.formatter())).pause("300ms")
-                    .say("You have " + todayEvents.size() + " events,")
-                    .say("which start at "+ dateTimeUtil.startTime(todayEvents.get(0)))
-                    .say("and will end up to "+ dateTimeUtil.endTime(todayEvents.get(todayEvents.size()-1)))
+                    .say("You have " + dayEvents.size() + " events,")
+                    .say("which start at "+ dateTimeUtil.startTime(dayEvents.get(0)))
+                    .say("and will end up to "+ dateTimeUtil.endTime(dayEvents.get(dayEvents.size()-1)))
                     .say("Good luck")
                     .build());
         } else
-            return new Response("It looks like you're free all day. Just take a rest");
+            return new Response("It looks like you're free all day long. Just take a rest");
+    }
+
+    public Response event(Event event) {
+        DateTime dateTime = dateTimeUtil.toJDateTime(event.getStart().getDateTime());
+        Map<String, String> parameters = descriptionParser.split(event.getDescription());
+
+        return new Response(new Speech()
+                .say("Here is quick overview of your event of "+event.getSummary())
+                .say("on "+dateTime.toString(DateTimeFormatters.monthDay.formatter())+".")
+                .say("Which starts at "+dateTime.toString(DateTimeFormatters.hourMinute.formatter()))
+                .sayIf(() -> parameters.containsKey("author"), "you author is "+parameters.get("author")+",")
+                .sayIf(() -> parameters.containsKey("place"), "at "+parameters.get("place")+",")
+                .build());
     }
 
     private String toPrettyString(Event event) {
