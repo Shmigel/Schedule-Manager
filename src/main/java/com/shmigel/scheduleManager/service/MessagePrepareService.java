@@ -4,11 +4,8 @@ import com.google.api.services.calendar.model.Event;
 import com.shmigel.scheduleManager.dialogflow.model.Response;
 import com.shmigel.scheduleManager.model.SpeechBreakStrength;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
-import io.vavr.Tuple3;
 import io.vavr.control.Option;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +19,7 @@ public class MessagePrepareService {
     private DateTimeUtil dateTimeUtil;
 
     @Autowired
-    private CalendarEventDescriptionParser descriptionParser;
+    private EventDescriptionParser descriptionParser;
 
     public Response liveEventMessage(Option<Event> event) {
         if (!event.isEmpty()) {

@@ -6,9 +6,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.shmigel.scheduleManager.service.CalendarEventDescriptionParser;
 import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
+import com.shmigel.scheduleManager.service.EventDescriptionParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +75,8 @@ public class GoogleBeanConfiguration {
     }
 
     @Bean
-    CalendarEventDescriptionParser descriptionParser() {
-        return new CalendarEventDescriptionParser();
+    EventDescriptionParser eventDescriptionParser() {
+        return new EventDescriptionParser();
     }
-
 
 }

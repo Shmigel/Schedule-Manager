@@ -1,8 +1,8 @@
 package com.shmigel.scheduleManager;
 
 import com.shmigel.scheduleManager.model.SpeechBreakStrength;
-import com.shmigel.scheduleManager.service.CalendarEventDescriptionParser;
 import com.shmigel.scheduleManager.service.DateTimeFormatters;
+import com.shmigel.scheduleManager.service.EventDescriptionParser;
 import com.shmigel.scheduleManager.service.Speech;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
 import org.joda.time.DateTime;
@@ -67,10 +67,10 @@ public class NonSpringBasedTest {
     @Test
     public void scalaDescriptionParser() {
         String preparedDescription = "author: Shmigel \n place: kc-2 \n Leson on something";
-        Map<String, String> split = new CalendarEventDescriptionParser().split(preparedDescription);
+        Map<String, String> split = new EventDescriptionParser().split(preparedDescription);
         assertEquals(split.toString(), "{author=Shmigel, place=kc-2}");
 
-        Map<String, String> split1 = new CalendarEventDescriptionParser().split(null);
+        Map<String, String> split1 = new EventDescriptionParser().split(null);
         assertEquals(split1.toString(), "{}");
     }
 
