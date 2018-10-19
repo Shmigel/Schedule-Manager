@@ -103,7 +103,7 @@ public class CalendarService {
     }
 
     public Optional<Event> event(int dayOfMounth, int position) {
-        return Try.of(() -> dayEvents(dayOfMounth).get(position)).toJavaOptional();
+        return Try.of(() -> dayEvents(dayOfMounth).get(position - 1)).toJavaOptional();
     }
 
     /**
