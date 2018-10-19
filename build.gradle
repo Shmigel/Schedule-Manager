@@ -24,8 +24,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-//	mavenCentral()
-	jcenter()
+	mavenCentral()
 }
 
 
@@ -50,7 +49,7 @@ dependencies {
 
 	compile 'org.scala-lang:scala-library:2.13.0-M5'
 
-//	runtime('org.springframework.boot:spring-boot-devtools')
+	runtime('org.springframework.boot:spring-boot-devtools')
 //	runtime('com.h2database:h2')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
