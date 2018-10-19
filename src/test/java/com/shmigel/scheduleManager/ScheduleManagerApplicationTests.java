@@ -31,9 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -141,6 +139,18 @@ public class ScheduleManagerApplicationTests {
 	}
 
 	@Test
+	public void dayEventsJsonTest() throws Exception {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("date", "2018-10-22T22:08:03+03:00");
+		parameters.put("position", "1.0");
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(requestWithParameters("EVENT", parameters))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from request {}", contentAsString);
+	}
+
+	@Test
 	public void test() {
 		MessagePrepareService bean = context.getBean(MessagePrepareService.class);
 		DateTimeUtil bean1 = context.getBean(DateTimeUtil.class);
@@ -156,8 +166,8 @@ public class ScheduleManagerApplicationTests {
 
 		System.out.println(response);
 
-		Optional<Event> event = calendarService.event(19, 0);
-		System.out.println(event.map(i -> i));
+		Optional<Event> event = calendarService.event(25, 1);
+		System.out.println(event.map(bean::upcomingEventMessage));
 	}
 
 }

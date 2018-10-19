@@ -61,7 +61,7 @@ public class DialogflowEventController {
     @EventMapping("EVENT")
     public Response event(Map<String, String> parameters) {
         DateTime date = new DateTime(parameters.get("date"));
-        int position = Integer.valueOf(parameters.get("number"));
+        int position = Double.valueOf(parameters.get("position")).intValue();
         return new Response(calendar.event(date.getDayOfMonth(), position).toString());
     }
 
