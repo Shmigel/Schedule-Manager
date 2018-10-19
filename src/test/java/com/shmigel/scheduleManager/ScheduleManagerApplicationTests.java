@@ -74,7 +74,7 @@ public class ScheduleManagerApplicationTests {
 
 	private Request requestWithParameters(String action, Map<String, String> parameters) {
 		return new Request(
-				new QueryResult(action, action , parameters),
+				new QueryResult(action, action, parameters),
 				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK", "1")))
 		);
 	}
@@ -166,8 +166,8 @@ public class ScheduleManagerApplicationTests {
 
 		System.out.println(response);
 
-		Optional<Event> event = calendarService.event(25, 1);
-		System.out.println(event.map(bean::upcomingEventMessage));
+		Option<Event> event = calendarService.event(25, 1);
+		System.out.println(bean.event(event));
 	}
 
 }

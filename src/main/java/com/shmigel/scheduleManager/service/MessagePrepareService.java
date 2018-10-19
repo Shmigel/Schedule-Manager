@@ -73,7 +73,11 @@ public class MessagePrepareService {
             return new Response("It looks like you're free all day long. Just take a rest");
     }
 
-    public Response event(Event event) {
+    public Response event(Option<Event> optionEvent) {
+        if (optionEvent.isEmpty())
+            return new Response("Couldn't find this one");
+
+        Event event = optionEvent.get();
         DateTime dateTime = dateTimeUtil.toJDateTime(event.getStart().getDateTime());
         Map<String, String> parameters = descriptionParser.split(event.getDescription());
 

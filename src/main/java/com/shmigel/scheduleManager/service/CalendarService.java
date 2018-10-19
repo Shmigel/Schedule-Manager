@@ -102,8 +102,8 @@ public class CalendarService {
         return calendarService.upcomingEvents(calendarId(), 10, dayPeriod._1, dayPeriod._2);
     }
 
-    public Optional<Event> event(int dayOfMounth, int position) {
-        return Try.of(() -> dayEvents(dayOfMounth).get(position - 1)).toJavaOptional();
+    public Option<Event> event(int dayOfMounth, int position) {
+        return Option.of(Try.of(() -> dayEvents(dayOfMounth).get(position - 1)).get());
     }
 
     /**
