@@ -1,6 +1,6 @@
-package com.shmigel.scheduleManager.dialogflow;
+package com.shmigel.scheduleManager.dialogflow.controller;
 
-import com.shmigel.scheduleManager.dialogflow.model.MethodWrapper;
+import com.shmigel.scheduleManager.dialogflow.model.request.MethodWrapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

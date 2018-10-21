@@ -1,4 +1,4 @@
-package com.shmigel.scheduleManager.dialogflow.model;
+package com.shmigel.scheduleManager.dialogflow.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

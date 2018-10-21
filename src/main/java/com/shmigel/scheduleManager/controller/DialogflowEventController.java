@@ -1,9 +1,14 @@
 package com.shmigel.scheduleManager.controller;
 
+import com.shmigel.scheduleManager.Tuple;
+import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.RichResponseBuilder;
+import com.shmigel.scheduleManager.dialogflow.model.response.SimpleResponse;
+import com.shmigel.scheduleManager.dialogflow.model.GoogleResponse;
 import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
-import com.shmigel.scheduleManager.dialogflow.model.Response;
 import com.shmigel.scheduleManager.service.MessagePrepareService;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
 import org.joda.time.DateTime;
@@ -32,41 +37,46 @@ public class DialogflowEventController {
     }
 
     @EventMapping("TEST_EVENT")
-    public Response testEvent() {
+    public TextResponse testEvent() {
         calendar.allFuncTest();
-        return new Response("Test is successful");
+        return new TextResponse("Test is successful");
     }
 
     @EventMapping("LIVE_EVENT")
-    public Response liveEvent() {
-        return messagePrepare.liveEventMessage(calendar.liveEvent());
+    public TextResponse liveEvent() {
+        return new TextResponse(messagePrepare.liveEventMessage(calendar.liveEvent()));
     }
 
     @EventMapping("UPCOMING_EVENT")
-    public Response upcomingEvent() {
-        return messagePrepare.upcomingEventMessage(calendar.nextEvent());
+    public TextResponse upcomingEvent() {
+        return new TextResponse(messagePrepare.upcomingEventMessage(calendar.nextEvent()));
     }
 
     @EventMapping("ADD_EVENT")
-    public Response addEvent(Map<String, String> parameters) {
-        return new Response("Event's scheduled. Currently not supported");
+    public TextResponse addEvent(Map<String, String> parameters) {
+        return new TextResponse("Event's scheduled. Currently not supported");
     }
 
     @EventMapping("DAY_EVENTS")
-    public Response dayEvents(Map<String, String> parameters) {
+    public GoogleResponse dayEvents(Map<String, String> parameters) {
         DateTime time = new DateTime(parameters.getOrDefault("date", dateTimeUtil.now().toString()));
-        return messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth()));
+        return simpleResponse(messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth())));
     }
 
     @EventMapping("EVENT")
-    public Response event(Map<String, String> parameters) {
+    public TextResponse event(Map<String, String> parameters) {
         DateTime date = new DateTime(parameters.get("date"));
         int position = Double.valueOf(parameters.get("position")).intValue();
         return messagePrepare.event(calendar.event(date.getDayOfMonth(), position));
     }
 
     @EventMapping("ADD_USER")
-    public Response addUser() {
-        return new Response("Currently not supported");
+    public TextResponse addUser() {
+        return new TextResponse("Currently not supported");
+    }
+
+    private GoogleResponse simpleResponse(Tuple<String, String> simpleResponses) {
+        return new GoogleResponse(new RichResponseBuilder(
+                new RichResponse().addElement(new SimpleResponse(simpleResponses.getFirst(), simpleResponses.getSecond()))));
     }
 }

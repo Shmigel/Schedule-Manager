@@ -1,8 +1,9 @@
-package com.shmigel.scheduleManager.dialogflow;
+package com.shmigel.scheduleManager.dialogflow.controller;
 
-import com.shmigel.scheduleManager.dialogflow.model.MethodWrapper;
-import com.shmigel.scheduleManager.dialogflow.model.Request;
 import com.shmigel.scheduleManager.dialogflow.model.Response;
+import com.shmigel.scheduleManager.dialogflow.model.request.MethodWrapper;
+import com.shmigel.scheduleManager.dialogflow.model.request.Request;
+import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -32,15 +33,16 @@ public class DialogflowEventControllerInvoker {
      * If has not parameter just invoking the method
      *
      * @param request given request
-     * @return Response of invoked method if any
+     * @return TextResponse of invoked method if any
      */
     public Response invokeProperMethod(Request request) {
         Iterator<MethodWrapper> iterator = methodWrappers.iterator();
-        Response response = Response.getUnknownAnswer();
+        Response response = TextResponse.getUnknownAnswer();
         while (iterator.hasNext()) {
             MethodWrapper wrapper = iterator.next();
             if (request.getQueryResult().getAction().equals(wrapper.getAction())) {
                 Method method = wrapper.getMethod();
+                Class<?> re = method.getReturnType();
                 logger.debug("Find proper method: {} for processing request", method);
                 if (method.getParameterCount() == 1) {
                      response = (Response) ReflectionUtils.invokeMethod(method,

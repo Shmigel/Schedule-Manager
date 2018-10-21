@@ -1,4 +1,4 @@
-package com.shmigel.scheduleManager.dialogflow;
+package com.shmigel.scheduleManager.dialogflow.controller;
 
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.shmigel.scheduleManager.dialogflow.model.MethodWrapper;
+import com.shmigel.scheduleManager.dialogflow.model.request.MethodWrapper;
 
 public class DialogflowEventControllerListener implements ApplicationListener<ContextRefreshedEvent> {
 
