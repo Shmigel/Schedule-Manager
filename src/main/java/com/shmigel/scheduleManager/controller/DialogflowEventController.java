@@ -62,7 +62,7 @@ public class DialogflowEventController {
     @EventMapping("DAY_EVENTS")
     public Response dayEvents(Map<String, String> parameters) {
         DateTime time = new DateTime(parameters.getOrDefault("date", dateTimeUtil.now().toString()));
-        Either<TextResponse, GoogleResponse> response
+        Either<TextResponse, TextResponse> response
                 = messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth()));
         if (response.isLeft()) {
             return response.getLeft();

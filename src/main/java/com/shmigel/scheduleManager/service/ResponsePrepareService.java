@@ -61,21 +61,21 @@ public class ResponsePrepareService {
                 .textResponse();
     }
 
-    public Either<TextResponse, GoogleResponse> dayEvents(List<Event> dayEvents) {
+    public Either<TextResponse, TextResponse> dayEvents(List<Event> dayEvents) {
         Either<TextResponse, GoogleResponse> response = null;
         if (dayEvents.isEmpty())
             return Either.left(new SimpleResponseBuilder()
                     .say("It looks like you're free all day long. Just take a rest").textResponse());
 
         DateTime start = dateTimeUtil.toJDateTime(dayEvents.get(0).getStart().getDateTime());
-        return Either.right(simpleResponse(new SimpleResponseBuilder()
+        return Either.right(new SimpleResponseBuilder()
                 .say("Here is your brief plan for "+ start.toString(DateTimeFormatters.monthDay.formatter())).pause("300ms")
                 .say("You have " + dayEvents.size() + " events,")
                 .say(prettyNames(dayEvents))
                 .say("which start at "+ dateTimeUtil.startTime(dayEvents.get(0)))
                 .say("and will end up to "+ dateTimeUtil.endTime(dayEvents.get(dayEvents.size()-1)))
                 .say("Good luck")
-                .build()));
+                .textResponse());
     }
 
     public TextResponse event(Option<Event> optionEvent) {
