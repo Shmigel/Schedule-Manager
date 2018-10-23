@@ -184,7 +184,15 @@ public class ScheduleManagerApplicationTests {
 		System.out.println(jsonOf(builder));
 
 		System.out.println(jsonOf(new SimpleResponse("qwe", "ewq")));
+	}
 
+	@Test
+	public void customJsonTest() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", "2018-10-24T12:00:00+03:00")))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from request {}", contentAsString);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.shmigel.scheduleManager.controller;
 
 import com.shmigel.scheduleManager.Tuple;
+import com.shmigel.scheduleManager.dialogflow.model.Response;
 import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
 import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
 import com.shmigel.scheduleManager.dialogflow.model.response.RichResponseBuilder;
@@ -59,18 +60,18 @@ public class DialogflowEventController {
     }
 
     @EventMapping("DAY_EVENTS")
-    public GoogleResponse dayEvents(Map<String, String> parameters) {
+    public Response dayEvents(Map<String, String> parameters) {
         DateTime time = new DateTime(parameters.getOrDefault("date", dateTimeUtil.now().toString()));
         Either<TextResponse, GoogleResponse> response
                 = messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth()));
         if (response.isLeft()) {
-            return response.get();
+            return response.getLeft();
         } else {
             return response.get();
         }
     }
 
-    @EventMapping("EVEN .T")
+    @EventMapping("EVENT")
     public TextResponse event(Map<String, String> parameters) {
         DateTime date = new DateTime(parameters.get("date"));
         int position = Double.valueOf(parameters.get("position")).intValue();
