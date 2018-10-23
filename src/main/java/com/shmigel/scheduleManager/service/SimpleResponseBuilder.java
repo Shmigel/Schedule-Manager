@@ -2,7 +2,9 @@ package com.shmigel.scheduleManager.service;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.shmigel.scheduleManager.Tuple;
+import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
 import com.shmigel.scheduleManager.dialogflow.model.response.ResponseElement;
+import com.shmigel.scheduleManager.dialogflow.model.response.SimpleResponse;
 import com.shmigel.scheduleManager.model.SpeechBreakStrength;
 import lombok.Data;
 
@@ -85,11 +87,11 @@ public class SimpleResponseBuilder extends ResponseElement {
         return this;
     }
 
-    public Tuple<String, String> build() {
-        return new Tuple<>(textToSpeech.append("</speak>").toString(), displayText.toString());
+    public SimpleResponse build() {
+        return new SimpleResponse(textToSpeech.append("</speak>").toString(), displayText.toString());
     }
 
-    public String fullfulmentText() {
-        return textToSpeech.toString();
+    public TextResponse textResponse() {
+        return new TextResponse(textToSpeech.append("</speak>").toString());
     }
 }

@@ -47,8 +47,8 @@ public class BaseController {
         configuration.setAuth0Token(user.getUserId(), user.getAccessToken());
 
         Response response = controllerInvoker.invokeProperMethod(request);
-        ResponseEntity<Response> okResponse = ResponseEntity.ok(response);
-        logger.debug("TextResponse: {}", okResponse);
+        ResponseEntity<Response> okResponse = ResponseEntity.ok().body(response);
+        logger.debug("TextResponse: {}", okResponse.getBody());
         return okResponse;
     }
 

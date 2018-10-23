@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
 import com.shmigel.scheduleManager.dialogflow.model.request.*;
 import com.shmigel.scheduleManager.dialogflow.model.response.SimpleResponse;
 import com.shmigel.scheduleManager.dialogflow.model.response.Suggestion;
@@ -12,7 +13,7 @@ import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
 import com.shmigel.scheduleManager.dialogflow.model.response.RichResponseBuilder;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
 import com.shmigel.scheduleManager.service.CalendarService;
-import com.shmigel.scheduleManager.service.MessagePrepareService;
+import com.shmigel.scheduleManager.service.ResponsePrepareService;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
 import io.vavr.Tuple2;
 import io.vavr.control.Option;
@@ -68,7 +69,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "GUdi3ekj0hyMbV8F9eUsj3uIWfo0z3xD";
+	private String token = "iZqOy3CM3DMAnF72KDPPGWEBVQYP21hR";
 
 	private Request request(String action) {
 		return new Request(
@@ -137,14 +138,14 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void dayEventsTest() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", new DateTime().minusDays(3).toString())))))
+				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", new DateTime().plusDays(2).toString())))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from request {}", contentAsString);
 	}
 
 	@Test
-	public void dayEventsJsonTest() throws Exception {
+	public void eventsTest() throws Exception {
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("date", "2018-10-22T22:08:03+03:00");
 		parameters.put("position", "1.0");
@@ -157,7 +158,7 @@ public class ScheduleManagerApplicationTests {
 
 	@Test
 	public void test() {
-		MessagePrepareService bean = context.getBean(MessagePrepareService.class);
+		ResponsePrepareService bean = context.getBean(ResponsePrepareService.class);
 		DateTimeUtil bean1 = context.getBean(DateTimeUtil.class);
 
 		Tuple2<com.google.api.client.util.DateTime, com.google.api.client.util.DateTime> dayPeriod
@@ -167,7 +168,7 @@ public class ScheduleManagerApplicationTests {
 				.setStart(new EventDateTime().setDateTime(dayPeriod._1))
 				.setEnd(new EventDateTime().setDateTime(dayPeriod._2));
 
-		String response = bean.upcomingEventMessage(test_event);
+		TextResponse response = bean.upcomingEventMessage(test_event);
 
 		System.out.println(response);
 

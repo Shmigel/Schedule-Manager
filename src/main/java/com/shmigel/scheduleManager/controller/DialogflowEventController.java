@@ -9,8 +9,9 @@ import com.shmigel.scheduleManager.dialogflow.model.GoogleResponse;
 import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
-import com.shmigel.scheduleManager.service.MessagePrepareService;
+import com.shmigel.scheduleManager.service.ResponsePrepareService;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
+import io.vavr.control.Either;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -22,14 +23,14 @@ public class DialogflowEventController {
 
     private final CalendarService calendar;
 
-    private final MessagePrepareService messagePrepare;
+    private final ResponsePrepareService messagePrepare;
 
     private final  DateTimeUtil dateTimeUtil;
 
     @Lazy
     @Autowired
     public DialogflowEventController(CalendarService calendar,
-                                     MessagePrepareService messagePrepare,
+                                     ResponsePrepareService messagePrepare,
                                      DateTimeUtil dateTimeUtil) {
         this.calendar = calendar;
         this.messagePrepare = messagePrepare;
@@ -44,12 +45,12 @@ public class DialogflowEventController {
 
     @EventMapping("LIVE_EVENT")
     public TextResponse liveEvent() {
-        return new TextResponse(messagePrepare.liveEventMessage(calendar.liveEvent()));
+        return messagePrepare.liveEventMessage(calendar.liveEvent());
     }
 
     @EventMapping("UPCOMING_EVENT")
     public TextResponse upcomingEvent() {
-        return new TextResponse(messagePrepare.upcomingEventMessage(calendar.nextEvent()));
+        return messagePrepare.upcomingEventMessage(calendar.nextEvent());
     }
 
     @EventMapping("ADD_EVENT")
@@ -60,10 +61,16 @@ public class DialogflowEventController {
     @EventMapping("DAY_EVENTS")
     public GoogleResponse dayEvents(Map<String, String> parameters) {
         DateTime time = new DateTime(parameters.getOrDefault("date", dateTimeUtil.now().toString()));
-        return simpleResponse(messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth())));
+        Either<TextResponse, GoogleResponse> response
+                = messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth()));
+        if (response.isLeft()) {
+            return response.get();
+        } else {
+            return response.get();
+        }
     }
 
-    @EventMapping("EVENT")
+    @EventMapping("EVEN .T")
     public TextResponse event(Map<String, String> parameters) {
         DateTime date = new DateTime(parameters.get("date"));
         int position = Double.valueOf(parameters.get("position")).intValue();

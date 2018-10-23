@@ -2,9 +2,14 @@ package com.shmigel.scheduleManager.service;
 
 import com.google.api.services.calendar.model.Event;
 import com.shmigel.scheduleManager.Tuple;
+import com.shmigel.scheduleManager.dialogflow.model.GoogleResponse;
 import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.RichResponseBuilder;
+import com.shmigel.scheduleManager.dialogflow.model.response.SimpleResponse;
 import com.shmigel.scheduleManager.model.SpeechBreakStrength;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
+import io.vavr.control.Either;
 import io.vavr.control.Option;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,36 +20,32 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class MessagePrepareService {
+public class ResponsePrepareService {
+
+    private final DateTimeUtil dateTimeUtil;
+
+    private final EventDescriptionParser descriptionParser;
 
     @Autowired
-    private DateTimeUtil dateTimeUtil;
+    public ResponsePrepareService(DateTimeUtil dateTimeUtil, EventDescriptionParser descriptionParser) {
+        this.dateTimeUtil = dateTimeUtil;
+        this.descriptionParser = descriptionParser;
+    }
 
-    @Autowired
-    private EventDescriptionParser descriptionParser;
-
-    public String liveEventMessage(Option<Event> event) {
+    public TextResponse liveEventMessage(Option<Event> event) {
         if (!event.isEmpty()) {
             return new SimpleResponseBuilder()
                     .say("Right now you have lecture of "+ event.get().getSummary())
                     .say("in "+event.get().getDescription())
-                    .fullfulmentText();
+                    .textResponse();
         } else {
             return new SimpleResponseBuilder().say("It seams like you're free now.")
                             .pause("400ms").say("Take a breath")
-                            .fullfulmentText();
+                            .textResponse();
         }
     }
 
-    /**
-     * Get response for upcoming event call
-     * Collect base time information of given event,
-     * and prepare response based on this
-     *
-     * @param event
-     * @return
-     */
-    public String upcomingEventMessage(Event event) {
+    public TextResponse upcomingEventMessage(Event event) {
         DateTime dateTime = new DateTime(event.getStart().getDateTime().getValue());
         Map<String, String> parameters = descriptionParser.split(event.getDescription());
 
@@ -55,42 +56,43 @@ public class MessagePrepareService {
                 .sayAsDate("dd", dateTime.toString(DateTimeFormatters.dayOfWeak.formatter()))
                 .pause("300ms", SpeechBreakStrength.STRONG)
                 .sayAsDate("mmdd", dateTime.toString(DateTimeFormatters.monthDay.formatter()))
-                .sayIf("its author is _,", () -> parameters.get("author"))
-                .sayIf("at _", () -> parameters.get("place"))
-                .fullfulmentText();
+                .sayIf(", its author is _", () -> parameters.get("author"))
+                .sayIf(", at _", () -> parameters.get("place"))
+                .textResponse();
     }
 
-    public Tuple<String, String> dayEvents(List<Event> dayEvents) {
+    public Either<TextResponse, GoogleResponse> dayEvents(List<Event> dayEvents) {
+        Either<TextResponse, GoogleResponse> response = null;
         if (dayEvents.isEmpty())
-            return new SimpleResponseBuilder()
-                    .say("It looks like you're free all day long. Just take a rest").build();
+            return Either.left(new SimpleResponseBuilder()
+                    .say("It looks like you're free all day long. Just take a rest").textResponse());
 
         DateTime start = dateTimeUtil.toJDateTime(dayEvents.get(0).getStart().getDateTime());
-        return new SimpleResponseBuilder()
+        return Either.right(simpleResponse(new SimpleResponseBuilder()
                 .say("Here is your brief plan for "+ start.toString(DateTimeFormatters.monthDay.formatter())).pause("300ms")
                 .say("You have " + dayEvents.size() + " events,")
                 .say(prettyNames(dayEvents))
                 .say("which start at "+ dateTimeUtil.startTime(dayEvents.get(0)))
                 .say("and will end up to "+ dateTimeUtil.endTime(dayEvents.get(dayEvents.size()-1)))
                 .say("Good luck")
-                .build();
+                .build()));
     }
 
     public TextResponse event(Option<Event> optionEvent) {
         if (optionEvent.isEmpty())
-            return new TextResponse("Couldn't find this one");
+            return new SimpleResponseBuilder().say("Couldn't find this one").textResponse();
 
         Event event = optionEvent.get();
         DateTime dateTime = dateTimeUtil.toJDateTime(event.getStart().getDateTime());
         Map<String, String> parameters = descriptionParser.split(event.getDescription());
 
-        return new TextResponse(new SimpleResponseBuilder()
+        return new SimpleResponseBuilder()
                 .say("Here is quick overview of your event of "+event.getSummary())
                 .say("on "+dateTime.toString(DateTimeFormatters.monthDay.formatter())+".")
                 .say("Which starts at "+dateTime.toString(DateTimeFormatters.hourMinute.formatter()))
                 .sayIf(() -> parameters.containsKey("author"), "you author is "+parameters.get("author")+",")
                 .sayIf(() -> parameters.containsKey("place"), "at "+parameters.get("place")+",")
-                .fullfulmentText());
+                .textResponse();
     }
 
     private String toPrettyString(Event event) {
@@ -100,6 +102,11 @@ public class MessagePrepareService {
 
     private String prettyNames(List<Event> events) {
         return events.stream().limit(7).map(Event::getSummary).collect(Collectors.joining(", \n"));
+    }
+
+    private GoogleResponse simpleResponse(SimpleResponse simpleResponses) {
+        return new GoogleResponse(new RichResponseBuilder(
+                new RichResponse().addElement(simpleResponses)));
     }
 
 }

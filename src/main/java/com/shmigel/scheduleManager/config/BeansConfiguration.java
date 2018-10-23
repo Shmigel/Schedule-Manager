@@ -1,5 +1,6 @@
 package com.shmigel.scheduleManager.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -35,6 +36,11 @@ public class BeansConfiguration {
             e.printStackTrace();
         }
         return httpTransport;
+    }
+
+    @Bean
+    ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
 }
