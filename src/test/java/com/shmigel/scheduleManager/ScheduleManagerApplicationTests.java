@@ -69,7 +69,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "iZqOy3CM3DMAnF72KDPPGWEBVQYP21hR";
+	private String token = "YhHyfW_KC4e07Lm06UVvRb-hCcL6Lr6Q";
 
 	private Request request(String action) {
 		return new Request(
@@ -182,19 +182,5 @@ public class ScheduleManagerApplicationTests {
 				new RichResponse(Collections.singletonList(new SimpleResponse("qwe", "ewq")),
 						Collections.singletonList(new Suggestion("qwe")))));
 		System.out.println(jsonOf(builder));
-
-		System.out.println(jsonOf(new SimpleResponse("qwe", "ewq")));
 	}
-
-	@Test
-	public void customJsonTest() throws Exception {
-		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(json))
-				.andExpect(status().isOk()).andReturn();
-		String contentAsString = result.getResponse().getContentAsString();
-		logger.info("Return from request {}", contentAsString);
-	}
-
-	String json = "{\"responseId\":\"664fa0cd-eda7-443e-b391-82f28d000b42\",\"queryResult\":{\"queryText\":\"events for tomorrow\",\"action\":\"DAY_EVENTS\",\"parameters\":{\"date\":\"2018-10-25T12:00:00+03:00\"},\"allRequiredParamsPresent\":true,\"fulfillmentMessages\":[{\"text\":{\"text\":[\"\"]}}],\"outputContexts\":[{\"name\":\"projects/schedule-manager-a6180/agent/sessions/03671030-d46e-e7ba-3271-4ff2246cd28e/contexts/dayevents-followup\",\"lifespanCount\":2,\"parameters\":{\"date\":\"2018-10-25T12:00:00+03:00\",\"date.original\":\"for tomorrow\"}}],\"intent\":{\"name\":\"projects/schedule-manager-a6180/agent/intents/c56ee473-ff4e-411a-9dd5-589de3913854\",\"displayName\":\"Day Events\"},\"intentDetectionConfidence\":1,\"languageCode\":\"en\"},\"originalDetectIntentRequest\":{\"payload\":{}},\"session\":\"projects/schedule-manager-a6180/agent/sessions/03671030-d46e-e7ba-3271-4ff2246cd28e\"}";
-
 }

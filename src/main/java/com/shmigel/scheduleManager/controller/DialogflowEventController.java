@@ -22,20 +22,23 @@ import java.util.Map;
 @EventController
 public class DialogflowEventController {
 
-    private final CalendarService calendar;
+    private CalendarService calendar;
 
-    private final ResponsePrepareService messagePrepare;
+    private ResponsePrepareService messagePrepare;
 
-    private final  DateTimeUtil dateTimeUtil;
+    private DateTimeUtil dateTimeUtil;
+
+    private BaseController controller;
 
     @Lazy
     @Autowired
     public DialogflowEventController(CalendarService calendar,
                                      ResponsePrepareService messagePrepare,
-                                     DateTimeUtil dateTimeUtil) {
+                                     DateTimeUtil dateTimeUtil, BaseController controller) {
         this.calendar = calendar;
         this.messagePrepare = messagePrepare;
         this.dateTimeUtil = dateTimeUtil;
+        this.controller = controller;
     }
 
     @EventMapping("TEST_EVENT")

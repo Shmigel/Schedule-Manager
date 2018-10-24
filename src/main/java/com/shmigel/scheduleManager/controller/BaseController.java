@@ -3,10 +3,12 @@ package com.shmigel.scheduleManager.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shmigel.scheduleManager.config.GoogleBeanConfiguration;
 import com.shmigel.scheduleManager.dialogflow.controller.DialogflowEventControllerInvoker;
+import com.shmigel.scheduleManager.dialogflow.model.GoogleResponse;
 import com.shmigel.scheduleManager.dialogflow.model.Response;
-import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
 import com.shmigel.scheduleManager.dialogflow.model.request.Request;
 import com.shmigel.scheduleManager.dialogflow.model.request.User;
+import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.RichResponseBuilder;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,17 +41,28 @@ public class BaseController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<Response> baseController(@RequestBody String body, @RequestHeader HttpHeaders headers) {
-        logger.debug("Post request with headers: {}, and body: {}", headers, body);
-        Request request = getRequest(body);
-
-        User user = request.getOriginalDetectIntentRequest().getPayload().getUser();
-        configuration.setAuth0Token(user.getUserId(), user.getAccessToken());
-
+    public ResponseEntity<?> baseController(@RequestBody Request request, @RequestHeader HttpHeaders headers) {
+        logger.debug("Post request with headers: {}, and body: {}", headers, request);
+        setupAuth0Token(request);
+        if (request.getQueryResult().getAction().equals("DAY_EVENTS")) {
+            return ResponseEntity.ok().body(response);
+        }
         Response response = controllerInvoker.invokeProperMethod(request);
         ResponseEntity<Response> okResponse = ResponseEntity.ok().body(response);
         logger.debug("TextResponse: {}", okResponse.getBody());
         return okResponse;
+    }
+    
+    private void setupAuth0Token(Request request) {
+        User user = request.getOriginalDetectIntentRequest().getPayload().getUser();
+        configuration.setAuth0Token(user.getUserId(), user.getAccessToken());
+    }
+    
+    String response = "";
+    @RequestMapping(value = "/set" , method = RequestMethod.POST)
+    public ResponseEntity<String> temporary(@RequestBody String body) {
+        response = body;
+        return ResponseEntity.ok("Set successful");
     }
 
     private Request getRequest(String body) {
