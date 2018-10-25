@@ -1,7 +1,7 @@
 package com.shmigel.scheduleManager;
 
-import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
-import com.shmigel.scheduleManager.service.SimpleResponseBuilder;
+import com.shmigel.scheduleManager.dialogflow.model.response.DialogflowResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.message.SimpleResponseBuilder;
 import com.shmigel.scheduleManager.service.DateTimeFormatters;
 import com.shmigel.scheduleManager.service.EventDescriptionParser;
 import org.joda.time.DateTime;
@@ -17,21 +17,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(JUnit4.class)
 public class NonSpringBasedTest {
 
-    @Test
-    public void SSMLBuilderTest() {
-        TextResponse speech = new SimpleResponseBuilder()
-                .say("Hi")
-                .pause("700ms")
-                .sayAs("verbatim", "You").pause("400ms")
-                .sayAs("verbatim", "are").pause("400ms")
-                .sayAs("verbatim", "in").pause("400ms")
-                .sayAs("verbatim", "my").pause("400ms")
-                .sayAs("verbatim", "test").pause("700ms")
-                .sayAs("expletive", "secret textToSpeech")
-                .textResponse();
-        TextResponse textResponse = new TextResponse("<speak> Hi <break time=\"700ms\"/><say-as interpret-as=\"verbatim\">You</say-as> <break time=\"400ms\"/><say-as interpret-as=\"verbatim\">are</say-as> <break time=\"400ms\"/><say-as interpret-as=\"verbatim\">in</say-as> <break time=\"400ms\"/><say-as interpret-as=\"verbatim\">my</say-as> <break time=\"400ms\"/><say-as interpret-as=\"verbatim\">test</say-as> <break time=\"700ms\"/><say-as interpret-as=\"expletive\">secret textToSpeech</say-as> </speak>");
-        assertEquals(speech, textResponse);
-    }
 
     @Test
     public void test() {

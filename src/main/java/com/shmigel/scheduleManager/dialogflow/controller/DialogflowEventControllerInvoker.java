@@ -1,9 +1,8 @@
 package com.shmigel.scheduleManager.dialogflow.controller;
 
-import com.shmigel.scheduleManager.dialogflow.model.Response;
 import com.shmigel.scheduleManager.dialogflow.model.request.MethodWrapper;
 import com.shmigel.scheduleManager.dialogflow.model.request.Request;
-import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.DialogflowResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -35,9 +34,9 @@ public class DialogflowEventControllerInvoker {
      * @param request given request
      * @return TextResponse of invoked method if any
      */
-    public Response invokeProperMethod(Request request) {
+    public DialogflowResponse invokeProperMethod(Request request) {
         Iterator<MethodWrapper> iterator = methodWrappers.iterator();
-        Response response = TextResponse.getUnknownAnswer();
+        DialogflowResponse response = new DialogflowResponse();
         while (iterator.hasNext()) {
             MethodWrapper wrapper = iterator.next();
             if (request.getQueryResult().getAction().equals(wrapper.getAction())) {
@@ -45,11 +44,11 @@ public class DialogflowEventControllerInvoker {
                 Class<?> re = method.getReturnType();
                 logger.debug("Find proper method: {} for processing request", method);
                 if (method.getParameterCount() == 1) {
-                     response = (Response) ReflectionUtils.invokeMethod(method,
+                     response = (DialogflowResponse) ReflectionUtils.invokeMethod(method,
                              beanFactory.getBean(method.getDeclaringClass()),
                              request.getQueryResult().getParameters());
                 } else if(method.getParameterCount() == 0) {
-                     response = (Response) ReflectionUtils.invokeMethod(method,
+                     response = (DialogflowResponse) ReflectionUtils.invokeMethod(method,
                              beanFactory.getBean(method.getDeclaringClass()));
                 } else {
                     throw new RuntimeException("Can't fill methods' parameter");

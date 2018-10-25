@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
-import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
 import com.shmigel.scheduleManager.dialogflow.model.request.*;
-import com.shmigel.scheduleManager.dialogflow.model.response.SimpleResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.DialogflowResponse;
+import com.shmigel.scheduleManager.dialogflow.model.response.message.SimpleResponse;
 import com.shmigel.scheduleManager.dialogflow.model.response.Suggestion;
-import com.shmigel.scheduleManager.dialogflow.model.GoogleResponse;
 import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.RichResponseBuilder;
+import com.shmigel.scheduleManager.dialogflow.model.response.message.SimpleResponseBuilder;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
 import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.service.ResponsePrepareService;
@@ -69,7 +68,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "YhHyfW_KC4e07Lm06UVvRb-hCcL6Lr6Q";
+	private String token = "UW24weqH1qTWtE6etGqIaidso6h8Z8eJ";
 
 	private Request request(String action) {
 		return new Request(
@@ -138,7 +137,7 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void dayEventsTest() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", new DateTime().plusDays(2).toString())))))
+				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", new DateTime().plusDays(0).toString())))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from request {}", contentAsString);
@@ -168,7 +167,7 @@ public class ScheduleManagerApplicationTests {
 				.setStart(new EventDateTime().setDateTime(dayPeriod._1))
 				.setEnd(new EventDateTime().setDateTime(dayPeriod._2));
 
-		TextResponse response = bean.upcomingEventMessage(test_event);
+		DialogflowResponse response = bean.upcomingEventMessage(test_event);
 
 		System.out.println(response);
 
@@ -178,9 +177,7 @@ public class ScheduleManagerApplicationTests {
 
 	@Test
 	public void richMessageTest() throws JsonProcessingException {
-		GoogleResponse builder = new GoogleResponse(new RichResponseBuilder(
-				new RichResponse(Collections.singletonList(new SimpleResponse("qwe", "ewq")),
-						Collections.singletonList(new Suggestion("qwe")))));
-		System.out.println(jsonOf(builder));
+		DialogflowResponse of = new RichResponse().of(new SimpleResponseBuilder().say("It's work"));
+		System.out.println(jsonOf(of));
 	}
 }

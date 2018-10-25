@@ -1,11 +1,13 @@
-package com.shmigel.scheduleManager.dialogflow.model.response;
+package com.shmigel.scheduleManager.dialogflow.model.response.message;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Data
 @JsonTypeName("simpleResponse")
-public class SimpleResponse extends ResponseElement {
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class SimpleResponse extends Message {
 
     private String textToSpeech;
 

@@ -1,10 +1,6 @@
-package com.shmigel.scheduleManager.service;
+package com.shmigel.scheduleManager.dialogflow.model.response.message;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.shmigel.scheduleManager.Tuple;
-import com.shmigel.scheduleManager.dialogflow.model.TextResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.ResponseElement;
-import com.shmigel.scheduleManager.dialogflow.model.response.SimpleResponse;
 import com.shmigel.scheduleManager.model.SpeechBreakStrength;
 import lombok.Data;
 
@@ -12,7 +8,7 @@ import java.util.function.Supplier;
 
 @Data
 @JsonTypeName("simpleResponse")
-public class SimpleResponseBuilder extends ResponseElement {
+public class SimpleResponseBuilder extends Message {
 
     private StringBuilder textToSpeech = new StringBuilder();
 
@@ -43,8 +39,13 @@ public class SimpleResponseBuilder extends ResponseElement {
         return this;
     }
 
-    public SimpleResponseBuilder newLine() {
-        displayText.append("\n");
+    public SimpleResponseBuilder sayIfElse(String text, Supplier<Object> exception, String elseText) {
+        Object o = exception.get();
+        if (o != null) {
+            say(text.replace("_", o.toString()));
+        } else {
+            say(elseText);
+        }
         return this;
     }
 
@@ -82,6 +83,11 @@ public class SimpleResponseBuilder extends ResponseElement {
         return this;
     }
 
+    public SimpleResponseBuilder newLine() {
+        displayText.append("\n");
+        return this;
+    }
+
     public SimpleResponseBuilder point() {
         displayText.append(". ");
         return this;
@@ -91,7 +97,4 @@ public class SimpleResponseBuilder extends ResponseElement {
         return new SimpleResponse(textToSpeech.append("</speak>").toString(), displayText.toString());
     }
 
-    public TextResponse textResponse() {
-        return new TextResponse(textToSpeech.append("</speak>").toString());
-    }
 }

@@ -1,4 +1,4 @@
-package com.shmigel.scheduleManager.dialogflow.model.response;
+package com.shmigel.scheduleManager.dialogflow.model.response.message;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -10,5 +10,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SimpleResponse.class, name = "simpleResponse"),
 })
-public class ResponseElement {
+public class Message {
 }
