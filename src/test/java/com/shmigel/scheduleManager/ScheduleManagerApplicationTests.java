@@ -110,8 +110,8 @@ public class ScheduleManagerApplicationTests {
 
 	@Test
 	public void testTokenManager() {
-		Tuple<String, String> load = tokenManager.loadTokens(token);
-		logger.debug("Receive accessToken:"+ load.getFirst()+", refresh:"+load.getSecond());
+		Tuple2<String, String> load = tokenManager.loadTokens(token);
+		logger.debug("Receive accessToken:"+ load._1()+", refresh:"+load._2());
 	}
 
 	@Test
