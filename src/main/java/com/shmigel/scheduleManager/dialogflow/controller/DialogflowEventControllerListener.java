@@ -38,12 +38,10 @@ public class DialogflowEventControllerListener implements ApplicationListener<Co
         Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(EventController.class);
         beansWithAnnotation.forEach((i, j) -> {
             Method[] methods = beanFactory.getBean(i).getClass().getMethods();
-            if (methods != null) {
-                for (Method method : methods) {
-                    EventMapping annotation = method.getAnnotation(EventMapping.class);
-                    if (annotation != null) {
-                        methodWrappers.add(new MethodWrapper(method, annotation.value()));
-                    }
+            for (Method method : methods) {
+                EventMapping annotation = method.getAnnotation(EventMapping.class);
+                if (annotation != null) {
+                    methodWrappers.add(new MethodWrapper(method, annotation.value()));
                 }
             }
         });

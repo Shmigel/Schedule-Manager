@@ -21,17 +21,14 @@ public class DialogflowEventController {
 
     private DateTimeUtil dateTimeUtil;
 
-    private BaseController controller;
-
     @Lazy
     @Autowired
     public DialogflowEventController(CalendarService calendar,
                                      ResponsePrepareService messagePrepare,
-                                     DateTimeUtil dateTimeUtil, BaseController controller) {
+                                     DateTimeUtil dateTimeUtil) {
         this.calendar = calendar;
         this.messagePrepare = messagePrepare;
         this.dateTimeUtil = dateTimeUtil;
-        this.controller = controller;
     }
 
     @EventMapping("TEST_EVENT")
@@ -51,26 +48,24 @@ public class DialogflowEventController {
     }
 
     @EventMapping("ADD_EVENT")
-    public DialogflowResponse addEvent(Map<String, String> parameters) {
-        return new DialogflowResponse("Event's scheduled. Currently not supported", null);
+    public DialogflowResponse addEvent() {
+        return new DialogflowResponse("Event's scheduled. Currently not supported.", null);
     }
 
     @EventMapping("DAY_EVENTS")
-    public DialogflowResponse dayEvents(Map<String, String> parameters) {
-        DateTime time = new DateTime(parameters.getOrDefault("date", dateTimeUtil.now().toString()));
+    public DialogflowResponse dayEvents(String date) {
+        DateTime time = new DateTime(date);
         return messagePrepare.dayEvents(calendar.dayEvents(time.getDayOfMonth()));
     }
 
     @EventMapping("EVENT")
-    public DialogflowResponse event(Map<String, String> parameters) {
-        DateTime date = new DateTime(parameters.get("date"));
-        int position = Double.valueOf(parameters.get("position")).intValue();
-        return messagePrepare.event(calendar.event(date.getDayOfMonth(), position));
+    public DialogflowResponse event(String date, String position) {
+        return messagePrepare.event(calendar.event(new DateTime(date).getDayOfMonth(),
+                Double.valueOf(position).intValue()));
     }
 
     @EventMapping("ADD_USER")
-    public DialogflowResponse addUser(Map<String, String> parameters) {
-        String email = parameters.get("email");
+    public DialogflowResponse addUser(String email) {
         calendar.addUser(email, "reader");
         return new DialogflowResponse("We did our part of deal.", null);
     }

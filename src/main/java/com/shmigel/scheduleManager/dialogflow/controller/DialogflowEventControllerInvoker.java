@@ -7,11 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.Set;
+import java.lang.reflect.Parameter;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class DialogflowEventControllerInvoker {
 
@@ -41,22 +44,43 @@ public class DialogflowEventControllerInvoker {
             MethodWrapper wrapper = iterator.next();
             if (request.getQueryResult().getAction().equals(wrapper.getAction())) {
                 Method method = wrapper.getMethod();
-                Class<?> re = method.getReturnType();
+                Parameter[] parameters = method.getParameters();
                 logger.debug("Find proper method: {} for processing request", method);
-                if (method.getParameterCount() == 1) {
-                     response = (DialogflowResponse) ReflectionUtils.invokeMethod(method,
-                             beanFactory.getBean(method.getDeclaringClass()),
-                             request.getQueryResult().getParameters());
+                if (method.getParameterCount() == 1 &&
+                        parameters[0].getType().getName().equals(Map.class.getName())) {
+                    response = (DialogflowResponse) ReflectionUtils.invokeMethod(method,
+                            beanFactory.getBean(method.getDeclaringClass()),
+                            request.getQueryResult().getParameters());
+                } else if(method.getParameterCount() != 0) {
+                    response = (DialogflowResponse) ReflectionUtils.invokeMethod(method,
+                            beanFactory.getBean(method.getDeclaringClass()),
+                            matchMethodParameters(method, request.getQueryResult().getParameters()));
                 } else if(method.getParameterCount() == 0) {
                      response = (DialogflowResponse) ReflectionUtils.invokeMethod(method,
                              beanFactory.getBean(method.getDeclaringClass()));
                 } else {
-                    throw new RuntimeException("Can't fill methods' parameter");
+                    throw new RuntimeException("Can't fill method parameters");
                 }
 
             }
         }
         return response;
+    }
+
+    private String[] matchMethodParameters(Method method,
+                                                         Map<String, String> givenParameters) {
+        List<String> fitParameters = new ArrayList<>();
+        String[] parameterNames = new DefaultParameterNameDiscoverer().getParameterNames(method);
+
+        for (String name: parameterNames) {
+            if (givenParameters.containsKey(name)) {
+                fitParameters.add(givenParameters.get(name));
+            } else
+                throw new RuntimeException("Can't fill method parameters");
+        }
+        //java
+        String[] array = new String[fitParameters.size()];
+        return fitParameters.toArray(array);
     }
 
 }

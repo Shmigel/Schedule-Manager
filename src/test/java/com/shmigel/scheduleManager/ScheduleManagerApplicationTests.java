@@ -135,7 +135,7 @@ public class ScheduleManagerApplicationTests {
 	@Test
 	public void dayEventsTest() throws Exception {
 		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
-				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", new DateTime().plusDays(0).toString())))))
+				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", new DateTime().plusDays(1).toString())))))
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		logger.info("Return from request {}", contentAsString);
