@@ -1,4 +1,4 @@
-package com.shmigel.scheduleManager.service;
+package com.shmigel.scheduleManager.util;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

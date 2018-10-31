@@ -5,6 +5,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.AclRule;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
@@ -19,7 +20,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CalendarService {
 
@@ -126,6 +126,12 @@ public class CalendarService {
         return calendarService.upcomingEvents(calendarId()).stream()
                 .filter(dateTimeUtil::notOngoing).findFirst()
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public void addUser(String email, String role) {
+        AclRule.Scope scope = new AclRule.Scope().setType("user").setValue(email);
+        AclRule aclRule = new AclRule().setScope(scope).setRole(role);
+        Try.of(() -> googleCalendar.acl().insert(calendarId(), aclRule).execute()).get();
     }
 
     public void allFuncTest() {

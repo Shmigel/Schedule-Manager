@@ -6,8 +6,6 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.shmigel.scheduleManager.dialogflow.model.request.*;
 import com.shmigel.scheduleManager.dialogflow.model.response.DialogflowResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.message.SimpleResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.Suggestion;
 import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
 import com.shmigel.scheduleManager.dialogflow.model.response.message.SimpleResponseBuilder;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
@@ -68,7 +66,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "UW24weqH1qTWtE6etGqIaidso6h8Z8eJ";
+	private String token = "g9DNTZ1wiJBWLJBvqs3z6K8TFTxXnUbO";
 
 	private Request request(String action) {
 		return new Request(
@@ -179,5 +177,11 @@ public class ScheduleManagerApplicationTests {
 	public void richMessageTest() throws JsonProcessingException {
 		DialogflowResponse of = new RichResponse().of(new SimpleResponseBuilder().say("It's work"));
 		System.out.println(jsonOf(of));
+	}
+
+	@Test
+	public void addCalendarTest() throws Exception {
+		CalendarService calendar = context.getBean(CalendarService.class);
+		calendar.addUser("shmigelvolodimir.fake@gmail.com", "reader");
 	}
 }

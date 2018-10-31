@@ -2,8 +2,6 @@ package com.shmigel.scheduleManager.util;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
-import com.shmigel.scheduleManager.Tuple;
-import com.shmigel.scheduleManager.service.DateTimeFormatters;
 import io.vavr.Tuple2;
 import org.springframework.stereotype.Component;
 

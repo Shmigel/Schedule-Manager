@@ -1,8 +1,6 @@
 package com.shmigel.scheduleManager;
 
-import com.shmigel.scheduleManager.dialogflow.model.response.DialogflowResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.message.SimpleResponseBuilder;
-import com.shmigel.scheduleManager.service.DateTimeFormatters;
+import com.shmigel.scheduleManager.util.DateTimeFormatters;
 import com.shmigel.scheduleManager.service.EventDescriptionParser;
 import org.joda.time.DateTime;
 import org.junit.Test;

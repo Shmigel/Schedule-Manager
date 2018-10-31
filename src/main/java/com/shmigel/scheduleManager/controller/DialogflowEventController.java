@@ -69,8 +69,10 @@ public class DialogflowEventController {
     }
 
     @EventMapping("ADD_USER")
-    public DialogflowResponse addUser() {
-        return new DialogflowResponse("Currently not supported", null);
+    public DialogflowResponse addUser(Map<String, String> parameters) {
+        String email = parameters.get("email");
+        calendar.addUser(email, "reader");
+        return new DialogflowResponse("We did our part of deal.", null);
     }
 
 }
