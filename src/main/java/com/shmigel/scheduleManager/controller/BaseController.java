@@ -6,7 +6,6 @@ import com.shmigel.scheduleManager.dialogflow.controller.DialogflowEventControll
 import com.shmigel.scheduleManager.dialogflow.model.request.Request;
 import com.shmigel.scheduleManager.dialogflow.model.request.User;
 import com.shmigel.scheduleManager.dialogflow.model.response.DialogflowResponse;
-import io.vavr.control.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +38,11 @@ public class BaseController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<?> baseController(@RequestBody Request request, @RequestHeader HttpHeaders headers) {
-        logger.debug("Post request with headers: {}, and body: {}", headers, request);
+        logger.debug("Post request body: {}", request);
         setupAuth0Token(request);
         DialogflowResponse response = controllerInvoker.invokeProperMethod(request);
         ResponseEntity<DialogflowResponse> okResponse = ResponseEntity.ok().body(response);
-        logger.debug("TextResponse: {}", okResponse.getBody());
+        logger.debug("Response: {}", okResponse.getBody());
         return okResponse;
     }
     
@@ -51,12 +50,4 @@ public class BaseController {
         User user = request.getOriginalDetectIntentRequest().getPayload().getUser();
         configuration.setAuth0Token(user.getUserId(), user.getAccessToken());
     }
-
-    private Request getRequest(String body) {
-        return Try.of(() -> new ObjectMapper().readValue(body, Request.class))
-                .getOrElseThrow(() -> new RuntimeException());
-    }
-
-
-
 }

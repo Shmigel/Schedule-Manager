@@ -9,11 +9,11 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
 import com.shmigel.scheduleManager.service.EventDescriptionParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.vavr.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.*;
 
 import java.io.IOException;
@@ -32,33 +32,40 @@ public class GoogleBeanConfiguration {
 
     private final Auth0TokenService tokenManager;
 
-    private static Logger logger = LoggerFactory.getLogger(GoogleBeanConfiguration.class);
-
     @Autowired
     public GoogleBeanConfiguration(Auth0TokenService tokenManager) {
         this.tokenManager = tokenManager;
     }
-    private String refreshToken = "asd";
-    private final Map<String, String> tokenCache = new Hashtable<>();
+    private Tuple2<String, String> tokens;
+    private final Map<String, Tuple2<String, String>> tokenCache = new Hashtable<>();
 
 
     public void setAuth0Token(String userId, String userToken) {
         if (tokenCache.containsKey(userId)) {
-            this.refreshToken = tokenCache.get(userId);
+            this.tokens = tokenCache.get(userId);
         } else {
-            this.refreshToken = tokenManager.loadRefreshToken(userToken);
-            tokenCache.put(userId, refreshToken);
+            this.tokens = tokenManager.loadTokens(userToken);
+            tokenCache.put(userId, tokens);
         }
     }
 
     @Bean
+    @ConditionalOnExpression("'${tokens._1}'!=null")
     @Scope("prototype")
-    GoogleCredential googleCredential(TokenResponse tokenResponse) {
-        return new GoogleCredential().setFromTokenResponse(tokenResponse);
+    GoogleCredential googleCredential() {
+        return new GoogleCredential().setFromTokenResponse(new TokenResponse().setAccessToken(tokens._1));
+    }
+
+//    @Bean
+//    @ConditionalOnExpression("'${tokens._2}'!=null")
+//    @ConditionalOnMissingBean(GoogleCredential.class)
+//    @Scope("prototype")
+    GoogleCredential accessTokenGoogleCredential() {
+        return new GoogleCredential().setFromTokenResponse(new TokenResponse().setRefreshToken(tokens._2));
     }
 
     @Bean
-    @ConditionalOnExpression("'${refreshToken}'!=null")
+    @ConditionalOnExpression("'${tokens}'!=null")
     @Scope("prototype")
     CalendarService googleCalendar(JacksonFactory factory,
                                    NetHttpTransport httpTransport,
@@ -66,17 +73,13 @@ public class GoogleBeanConfiguration {
         return new CalendarService(factory, httpTransport, credential);
     }
 
-    @Bean
-    @ConditionalOnExpression("'${refreshToken}'!=null")
-    @Scope("prototype")
-    GoogleTokenResponse tokenRequest(JacksonFactory factory,
-                                     NetHttpTransport httpTransport) throws IOException {
-        return new GoogleRefreshTokenRequest(httpTransport, factory , refreshToken, clientId, clientSecret).execute();
-    }
+//    @Bean
+//    @Scope("prototype")
+//    GoogleTokenResponse tokenRequest(JacksonFactory factory,
+//                                     NetHttpTransport httpTransport) throws IOException {
+//        return new GoogleRefreshTokenRequest(httpTransport, factory , tokens, clientId, clientSecret).execute();
+//    }
 
-    @Bean
-    EventDescriptionParser eventDescriptionParser() {
-        return new EventDescriptionParser();
-    }
+
 
 }

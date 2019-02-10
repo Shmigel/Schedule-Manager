@@ -14,7 +14,6 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'scala'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
@@ -46,8 +45,7 @@ dependencies {
 	
 	compile 'joda-time:joda-time:2.10'
 	
-	runtime('org.springframework.boot:spring-boot-devtools')
-//	runtime('com.h2database:h2')
+//	runtime('org.springframework.boot:spring-boot-devtools')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

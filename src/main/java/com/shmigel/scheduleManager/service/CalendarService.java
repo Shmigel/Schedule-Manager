@@ -14,7 +14,7 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.shmigel.scheduleManager.GoogleException;
+import com.shmigel.scheduleManager.exception.GoogleCalendarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
@@ -38,7 +38,7 @@ public class CalendarService {
 
     private Logger logger = LoggerFactory.getLogger(CalendarService.class);
 
-    private final static String defaultCalendarName = "ScheduleManagers' Calendar";
+    private final static String defaultCalendarName = "Schedule Managers' Calendar";
     public CalendarService(JacksonFactory jacksonFactory,
                            NetHttpTransport httpTransport, GoogleCredential googleCredential) {
         googleCalendar = new Calendar.Builder(httpTransport, jacksonFactory, googleCredential)
@@ -61,15 +61,15 @@ public class CalendarService {
     /**
      * Load all and find new object of managed google calendar
      *
-     * @throws GoogleException if couldn't either load calendars or find managed googleCalendar
+     * @throws GoogleCalendarException if couldn't either load calendars or find managed googleCalendar
      * @return object of managed googleCalendar
      */
     private CalendarListEntry managedCalendar() {
         List<CalendarListEntry> list = Try.of(() -> googleCalendar.calendarList().list().execute())
-                .getOrElseThrow(GoogleException::new).getItems();
+                .getOrElseThrow(GoogleCalendarException::new).getItems();
 
         return list.stream().filter(i -> i.getSummary().equals(defaultCalendarName))
-                .findFirst().orElseThrow(GoogleException::new);
+                .findFirst().orElseThrow(GoogleCalendarException::new);
     }
 
     public List<Event> upcomingEvents(String calendarId, int maxResult,
@@ -81,7 +81,7 @@ public class CalendarService {
                 .setMaxResults(maxResult)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
-                .execute()).getOrElseThrow(GoogleException::new)
+                .execute()).getOrElseThrow(GoogleCalendarException::new)
                 .getItems();
     }
 
@@ -120,7 +120,6 @@ public class CalendarService {
         }
         return Option.none();
     }
-
 
     public Event nextEvent() {
         return calendarService.upcomingEvents(calendarId()).stream()

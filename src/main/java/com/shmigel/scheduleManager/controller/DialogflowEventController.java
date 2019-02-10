@@ -19,16 +19,12 @@ public class DialogflowEventController {
 
     private ResponsePrepareService messagePrepare;
 
-    private DateTimeUtil dateTimeUtil;
-
     @Lazy
     @Autowired
     public DialogflowEventController(CalendarService calendar,
-                                     ResponsePrepareService messagePrepare,
-                                     DateTimeUtil dateTimeUtil) {
+                                     ResponsePrepareService messagePrepare) {
         this.calendar = calendar;
         this.messagePrepare = messagePrepare;
-        this.dateTimeUtil = dateTimeUtil;
     }
 
     @EventMapping("TEST_EVENT")

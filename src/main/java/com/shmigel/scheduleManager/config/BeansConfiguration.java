@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.shmigel.scheduleManager.service.EventDescriptionParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.*;
@@ -43,4 +44,8 @@ public class BeansConfiguration {
         return new ObjectMapper();
     }
 
+    @Bean
+    EventDescriptionParser eventDescriptionParser() {
+        return new EventDescriptionParser();
+    }
 }
