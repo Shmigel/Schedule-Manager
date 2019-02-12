@@ -48,6 +48,6 @@ public class BaseController {
     
     private void setupAuth0Token(Request request) {
         User user = request.getOriginalDetectIntentRequest().getPayload().getUser();
-        configuration.setAuth0Token(user.getUserId(), user.getAccessToken());
+        configuration.setAuth0Token(user.getAccessToken());
     }
 }

@@ -16,8 +16,6 @@ import java.security.GeneralSecurityException;
 @Configuration
 public class BeansConfiguration {
 
-    private static Logger logger = LoggerFactory.getLogger(BeansConfiguration.class);
-
     @Bean
     RestTemplate restTemplate() {
         return new RestTemplate();

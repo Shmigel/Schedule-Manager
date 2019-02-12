@@ -5,15 +5,13 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.BaseRequest;
 import com.shmigel.scheduleManager.exception.Auth0Exception;
-import com.shmigel.scheduleManager.exception.GoogleCalendarException;
 import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Supplier;
@@ -36,8 +34,11 @@ public class Auth0TokenService {
     @Value("${auth0.audience}")
     private String audience;
 
+    @Value("${auth0.baseUrl}")
+    private String baseUrl;
+
     private String getUserId(String auth0Token) {
-        HttpResponse<JsonNode> userInfoResponse = jsonNodeResponse(Unirest.get("https://schedule-manager.eu.auth0.com/userinfo")
+        HttpResponse<JsonNode> userInfoResponse = jsonNodeResponse(Unirest.get(baseUrl +"/userinfo")
                 .header("Authorization", "Bearer " + auth0Token));
 
         return Option.of(userInfoResponse.getBody().getObject().get("sub").toString())
@@ -45,7 +46,7 @@ public class Auth0TokenService {
     }
 
     private String getAuth0ManagerToken() {
-        HttpResponse<JsonNode> auth0ManagerTokenResponse = jsonNodeResponse(Unirest.post("https://schedule-manager.eu.auth0.com/oauth/token")
+        HttpResponse<JsonNode> auth0ManagerTokenResponse = jsonNodeResponse(Unirest.post(baseUrl +"/oauth/token")
                 .header("Content-Type", "application/json")
                 .body(preparedBody()));
 
@@ -54,7 +55,7 @@ public class Auth0TokenService {
     }
 
     private Tuple2<String, String> getGoogleTokens(String userId, String auth0ManagerToken) {
-        HttpResponse<JsonNode> accessTokenResonse = jsonNodeResponse(Unirest.get("https://schedule-manager.eu.auth0.com/api/v2/users/" + userId)
+        HttpResponse<JsonNode> accessTokenResonse = jsonNodeResponse(Unirest.get(baseUrl +"/api/v2/users/" + userId)
                 .header("Authorization", "Bearer " + auth0ManagerToken));
         log.debug("Google response {}", accessTokenResonse.getBody());
         JSONObject identities = accessTokenResonse.getBody().getObject()
@@ -68,12 +69,13 @@ public class Auth0TokenService {
      * @return result of the request if successful
      */
     private HttpResponse<JsonNode> jsonNodeResponse(BaseRequest request) {
-        HttpResponse<JsonNode> response = Try.of(request::asJson).getOrElseThrow((Supplier<RuntimeException>) RuntimeException::new);
-        log.debug("Reseive {} response from {}", response, request.getHttpRequest());
+        HttpResponse<JsonNode> response = Try.of(request::asJson)
+                .getOrElseThrow((Supplier<RuntimeException>) RuntimeException::new);
+        log.debug("Receive {} response from {}", response, request.getHttpRequest());
         return response;
     }
 
-    public Tuple2<String, String> loadTokens(String userToken) {
+    private Tuple2<String, String> loadTokens(String userToken) {
         String userId = getUserId(userToken);
         String auth0ManagerToken = getAuth0ManagerToken();
 
@@ -82,9 +84,10 @@ public class Auth0TokenService {
         return tokens;
     }
 
-    public String loadRefreshToken(String userToken) {
-        Tuple2<String, String> load = loadTokens(userToken);
-        return load._2();
+
+    @Cacheable(value = "googleTokensCache")
+    public Tuple2<String, String> getTokens(String userToken) {
+        return loadTokens(userToken);
     }
 
     private JSONObject preparedBody() {
