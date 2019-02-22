@@ -10,4 +10,5 @@ public class Suggestion {
     public Suggestion(String title) {
         this.title = title;
     }
+
 }

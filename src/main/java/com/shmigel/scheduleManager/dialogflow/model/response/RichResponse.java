@@ -5,6 +5,7 @@ import com.shmigel.scheduleManager.dialogflow.model.response.message.Message;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,9 +31,17 @@ public class RichResponse {
         return this;
     }
 
+    //Kind of builders
     @JsonIgnore
     public DialogflowResponse of(Message m) {
         items.addAll(Collections.singletonList(m));
+        return build();
+    }
+
+    @JsonIgnore
+    public DialogflowResponse of(Message m, Collection<Suggestion> s) {
+        items.addAll(Collections.singletonList(m));
+        suggestions.addAll(s);
         return build();
     }
 
