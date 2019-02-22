@@ -5,12 +5,8 @@ import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventController;
 import com.shmigel.scheduleManager.dialogflow.model.annotation.EventMapping;
 import com.shmigel.scheduleManager.service.ResponsePrepareService;
-import com.shmigel.scheduleManager.util.DateTimeUtil;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-
-import java.util.Map;
 
 @EventController
 public class DialogflowEventController {
@@ -19,7 +15,6 @@ public class DialogflowEventController {
 
     private ResponsePrepareService messagePrepare;
 
-    @Lazy
     @Autowired
     public DialogflowEventController(CalendarService calendar,
                                      ResponsePrepareService messagePrepare) {
@@ -56,7 +51,7 @@ public class DialogflowEventController {
 
     @EventMapping("EVENT")
     public DialogflowResponse event(String date, String position) {
-        return messagePrepare.event(calendar.event(new DateTime(date).getDayOfMonth(),
+        return messagePrepare.event(calendar.eventByPosition(new DateTime(date).getDayOfMonth(),
                 Double.valueOf(position).intValue()));
     }
 

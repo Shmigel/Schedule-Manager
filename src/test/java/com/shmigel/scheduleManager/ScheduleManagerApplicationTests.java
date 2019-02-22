@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -51,7 +50,6 @@ public class ScheduleManagerApplicationTests {
 	@Autowired
 	private ApplicationContext context;
 
-	@Lazy
 	@Autowired
 	private CalendarService calendarService;
 
@@ -66,7 +64,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "hjOO2aJdDmXN5YM5E-62BUkeNi52ydKr";
+	private String token = "Oe3QJZmmtpK61y5ncdn4jaUN8E9bvQPL";
 
 	private Request request(String action) {
 		return new Request(
@@ -161,7 +159,7 @@ public class ScheduleManagerApplicationTests {
 		Tuple2<com.google.api.client.util.DateTime, com.google.api.client.util.DateTime> dayPeriod
 				= bean1.dayPeriod(23);
 
-		Event test_event = new Event().setSummary("FacilityDTO event").setDescription("author: Shmigel\n place: kc-2")
+		Event test_event = new Event().setSummary("FacilityDTO eventByPosition").setDescription("author: Shmigel\n place: kc-2")
 				.setStart(new EventDateTime().setDateTime(dayPeriod._1))
 				.setEnd(new EventDateTime().setDateTime(dayPeriod._2));
 
@@ -169,8 +167,13 @@ public class ScheduleManagerApplicationTests {
 
 		System.out.println(response);
 
-		Option<Event> event = calendarService.event(25, 1);
+		Option<Event> event = calendarService.eventByPosition(25, 1);
 		System.out.println(bean.event(event));
+	}
+
+	@Test
+	public void bt() {
+
 	}
 
 	@Test

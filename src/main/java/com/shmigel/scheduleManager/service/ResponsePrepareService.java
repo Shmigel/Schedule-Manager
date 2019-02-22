@@ -51,7 +51,7 @@ public class ResponsePrepareService {
         DateTime dateTime = new DateTime(event.getStart().getDateTime().getValue());
         Map<String, String> parameters = descriptionParser.split(event.getDescription());
 
-        SimpleResponse simpleResponse = new SimpleResponseBuilder().say("Your next event is " + event.getSummary())
+        SimpleResponse simpleResponse = new SimpleResponseBuilder().say("Your next eventByPosition is " + event.getSummary())
                 .say("and  starts at")
                 .sayAsTime("hm24", dateTime.toString(DateTimeFormatters.hourMinute.formatter()))
                 .say("on the")
@@ -92,7 +92,7 @@ public class ResponsePrepareService {
         Map<String, String> parameters = descriptionParser.split(event.getDescription());
 
         SimpleResponse simpleResponse = new SimpleResponseBuilder()
-                .say("Here is quick overview of your event of " + event.getSummary())
+                .say("Here is quick overview of your eventByPosition of " + event.getSummary())
                 .say("on " + dateTime.toString(DateTimeFormatters.monthDay.formatter()) + ".")
                 .say("Which starts at " + dateTime.toString(DateTimeFormatters.hourMinute.formatter()))
                 .sayIf("its author is _", () -> parameters.get("author"))

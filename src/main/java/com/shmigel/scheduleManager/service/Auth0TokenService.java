@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 /**
  * Since request from dialogflow gives auth0 access token instead of google access/refresh tokens,
  * i need to perform few additional request to get relevant access/refresh tokens
- * witch will be used to access to google calendar api
+ * witch will be used to access to google calendarManager api
  */
 @Slf4j
 @Service
@@ -83,7 +83,6 @@ public class Auth0TokenService {
         log.info("userId:"+userId+" access_token:"+ tokens._1 +", refresh_token:"+ tokens._2);
         return tokens;
     }
-
 
     @Cacheable(value = "googleTokensCache")
     public Tuple2<String, String> getTokens(String userToken) {

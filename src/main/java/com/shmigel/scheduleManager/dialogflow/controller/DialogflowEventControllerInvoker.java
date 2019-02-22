@@ -8,13 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.DefaultParameterNameDiscoverer;
-import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class DialogflowEventControllerInvoker {
 
@@ -27,11 +25,12 @@ public class DialogflowEventControllerInvoker {
     private Set<MethodWrapper> methodWrappers;
 
     /**
-     * Try to find method to process given request by comparing methods' annotation and request action parameter.
+     * Trying to find method in order to process given request by comparing methods' annotation and request action parameter.
      *
      * If method has one parameter, he's suggesting that it's parameter of the request,
      * and send requests' parameter as argue,
-     * If method has more than one parameter he, by now, can't fill they, and throwing {@link RuntimeException},
+     * If method has more than one parameter then we try to fulfill them by request parameters,
+     * comparing names of method parameters and names of request parameters,
      * If has not parameter just invoking the method
      *
      * @param request given request

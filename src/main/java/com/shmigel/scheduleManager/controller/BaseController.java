@@ -1,6 +1,6 @@
 package com.shmigel.scheduleManager.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.shmigel.scheduleManager.config.GoogleBeanConfiguration;
 import com.shmigel.scheduleManager.dialogflow.controller.DialogflowEventControllerInvoker;
 import com.shmigel.scheduleManager.dialogflow.model.request.Request;
@@ -45,7 +45,13 @@ public class BaseController {
         logger.debug("Response: {}", okResponse.getBody());
         return okResponse;
     }
-    
+
+    /**
+     * Set authToken in {@link GoogleBeanConfiguration} class in order to later load google tokens
+     * and create {@link GoogleCredential} bean.
+     *
+     * @param request get authToken called accessToken in request JSON
+     */
     private void setupAuth0Token(Request request) {
         User user = request.getOriginalDetectIntentRequest().getPayload().getUser();
         configuration.setAuth0Token(user.getAccessToken());
