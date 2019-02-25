@@ -64,7 +64,7 @@ public class ScheduleManagerApplicationTests {
 		return json;
 	}
 
-	private String token = "Oe3QJZmmtpK61y5ncdn4jaUN8E9bvQPL";
+	private String token = "4Q343JKgCSA2MdI-yYEwC-TrxHRIqpye";
 
 	private Request request(String action) {
 		return new Request(
@@ -168,7 +168,7 @@ public class ScheduleManagerApplicationTests {
 		System.out.println(response);
 
 		Option<Event> event = calendarService.eventByPosition(25, 1);
-		System.out.println(bean.event(event));
+		System.out.println(bean.eventByPosition(event, "1"));
 	}
 
 	@Test

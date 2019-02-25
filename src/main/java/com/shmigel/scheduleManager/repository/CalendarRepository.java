@@ -22,12 +22,13 @@ public class CalendarRepository {
     public List<Event> upcomingEvents(int maxResult,
                                       DateTime start, DateTime end) {
         GoogleBeansTuple calendar = googleBean.calendar();
-        log.info("Loading new upcoming Events");
+        log.info("Loading new calendar events");
         return Try.of(() -> calendar.calendarManger.events().list(calendar.managedCalendar.getId())
                 .setTimeMin(start).setTimeMax(end).setMaxResults(maxResult)
                 .setOrderBy("startTime").setSingleEvents(true)
-                .execute()).onFailure(RuntimeException::new).get()
-                .getItems();
+                .execute()).onFailure(RuntimeException::new)
+                .peek(i -> log.debug("Loaded {} events", i.getItems().size()))
+                .get().getItems();
     }
 
     public void addUser(String email, String role) {

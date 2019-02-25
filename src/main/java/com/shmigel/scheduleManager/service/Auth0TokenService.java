@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.function.Supplier;
-
 /**
  * Since request from dialogflow gives auth0 access token instead of google access/refresh tokens,
  * i need to perform few additional request to get relevant access/refresh tokens
@@ -70,8 +68,8 @@ public class Auth0TokenService {
      */
     private HttpResponse<JsonNode> jsonNodeResponse(BaseRequest request) {
         HttpResponse<JsonNode> response = Try.of(request::asJson)
-                .getOrElseThrow((Supplier<RuntimeException>) RuntimeException::new);
-        log.debug("Receive {} response from {}", response, request.getHttpRequest());
+                .getOrElseThrow(() -> new RuntimeException("Some problem with executing "+request.getHttpRequest().getUrl()+" request"));
+        log.debug("Receive {} response from {}", response.getStatusText(), request.getHttpRequest().getUrl());
         return response;
     }
 

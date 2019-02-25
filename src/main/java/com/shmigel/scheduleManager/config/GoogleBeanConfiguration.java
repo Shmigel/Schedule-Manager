@@ -59,22 +59,23 @@ public class GoogleBeanConfiguration {
     }
 
     private GoogleCredential googleCredential(String auth0Token) {
-        log.info("Building google credential for auth0Token: {}", auth0Token);
+        log.info("Building google credential on auth0Token: {}", auth0Token);
         Tuple2<String, String> googleToken = tokenManager.getTokens(auth0Token);
 
-        if (googleToken._2 != null) {
+        if (!googleToken._2.isEmpty()) {
             log.debug("Base on refresh token: {}", googleToken._2);
             return new GoogleCredential.Builder().setTransport(httpTransport)
                     .setJsonFactory(factory)
                     .setClientSecrets(clientId, clientSecret)
                     .build().setFromTokenResponse(new TokenResponse().setRefreshToken(googleToken._2));
-        }else if(googleToken._1 != null) {
+        }else if(!googleToken._1.isEmpty()) {
             log.debug("Base on access token: {}", googleToken._1);
             return new GoogleCredential.Builder().setTransport(httpTransport)
                     .setJsonFactory(factory)
                     .setClientSecrets(clientId, clientSecret)
                     .build().setFromTokenResponse(new TokenResponse().setAccessToken(googleToken._1));
         }else {
+            log.error("Both google token is missing");
             throw new RuntimeException("Both google token is missing");
         }
     }
@@ -87,7 +88,7 @@ public class GoogleBeanConfiguration {
 
     @Cacheable
     private Calendar calendarManager(String auth0Token) {
-        log.info("Creating GoogleCredential for token: {}", auth0Token);
+        log.info("Creating GoogleCredential on auth0Token: {}", auth0Token);
         GoogleCredential credential = googleCredential(auth0Token);
         return new Calendar.Builder(httpTransport, factory, credential)
                 .setApplicationName(projectName).build();
@@ -95,7 +96,7 @@ public class GoogleBeanConfiguration {
 
     @Cacheable
     private CalendarListEntry managedCalendar(Calendar googleCalendar) {
-        log.info("Looking for managed calendar for calendar: {}", googleCalendar);
+        log.info("Looking for managed calendar from: {}", googleCalendar);
         List<CalendarListEntry> list = Try.of(() -> googleCalendar.calendarList().list().execute())
                 .getOrElseThrow(GoogleCalendarException::new).getItems();
 

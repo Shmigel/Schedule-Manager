@@ -33,13 +33,7 @@ public class ResponsePrepareService {
 
     public DialogflowResponse liveEventMessage(Option<Event> event) {
         if (!event.isEmpty()) {
-            Map<String, String> parameters = descriptionParser.split(event.get().getDescription());
-            SimpleResponse build = new SimpleResponseBuilder()
-                    .say("Right now you have lecture of " + event.get().getSummary())
-                    .sayIf("in _", () -> parameters.get("place"))
-                    .sayIf("its author is _", () -> parameters.get("author"))
-                    .build();
-            return new RichResponse().of(build);
+            return eventResponse("Right now you have lecture of ", event.get());
         } else
             return new RichResponse().of(
                     new SimpleResponseBuilder().say("It seams like you're free now.")
@@ -48,21 +42,15 @@ public class ResponsePrepareService {
     }
 
     public DialogflowResponse upcomingEventMessage(Event event) {
-        DateTime dateTime = new DateTime(event.getStart().getDateTime().getValue());
-        Map<String, String> parameters = descriptionParser.split(event.getDescription());
+         return eventResponse("Your next event is ", event);
+    }
 
-        SimpleResponse simpleResponse = new SimpleResponseBuilder().say("Your next eventByPosition is " + event.getSummary())
-                .say("and  starts at")
-                .sayAsTime("hm24", dateTime.toString(DateTimeFormatters.hourMinute.formatter()))
-                .say("on the")
-                .sayAsDate("dd", dateTime.toString(DateTimeFormatters.dayOfWeak.formatter()))
-                .pause("300ms", SpeechBreakStrength.STRONG)
-                .sayAsDate("mmdd", dateTime.toString(DateTimeFormatters.monthDay.formatter()))
-                .sayIf(", its author is _", () -> parameters.get("author"))
-                .sayIf(", at _", () -> parameters.get("place"))
-                .build();
+    public DialogflowResponse eventByPosition(Option<Event> optionEvent, String position) {
+        if (optionEvent.isEmpty())
+            return new RichResponse().of(
+                    new SimpleResponseBuilder().say("Couldn't find this one"));
 
-        return new RichResponse().of(simpleResponse);
+        return eventResponse("Here is quick overview of your event of ", optionEvent.get());
     }
 
     public DialogflowResponse dayEvents(List<Event> dayEvents) {
@@ -83,28 +71,32 @@ public class ResponsePrepareService {
         return new RichResponse().of(simpleResponse, suggestions);
     }
 
-    public DialogflowResponse event(Option<Event> optionEvent) {
-        if (optionEvent.isEmpty())
-            return new RichResponse().of(
-                    new SimpleResponseBuilder().say("Couldn'suggestions find this one"));
-
-        Event event = optionEvent.get();
-        DateTime dateTime = dateTimeUtil.toJDateTime(event.getStart().getDateTime());
+    /**
+     * Since all solo eventByPosition response has the same body of eventByPosition but with different header
+     * (ex. "Right now you have lecture of ...", "Your next event is ...")
+     * @param header
+     * @return
+     */
+    private DialogflowResponse eventResponse(String header, Event event) {
+        DateTime dateTime = new DateTime(event.getStart().getDateTime().getValue());
         Map<String, String> parameters = descriptionParser.split(event.getDescription());
 
-        SimpleResponse simpleResponse = new SimpleResponseBuilder()
-                .say("Here is quick overview of your eventByPosition of " + event.getSummary())
-                .say("on " + dateTime.toString(DateTimeFormatters.monthDay.formatter()) + ".")
-                .say("Which starts at " + dateTime.toString(DateTimeFormatters.hourMinute.formatter()))
-                .sayIf("its author is _", () -> parameters.get("author"))
-                .sayIf("in _", () -> parameters.get("place"))
+        SimpleResponse simpleResponse = new SimpleResponseBuilder().say(header + event.getSummary())
+                .say("and  starts at")
+                .sayAsTime("hm24", dateTime.toString(DateTimeFormatters.hourMinute.formatter()))
+                .say("on the")
+                .sayAsDate("dd", dateTime.toString(DateTimeFormatters.dayOfWeak.formatter()))
+                .pause("300ms", SpeechBreakStrength.STRONG)
+                .sayAsDate("mmdd", dateTime.toString(DateTimeFormatters.monthDay.formatter()))
+                .sayIf(", its teacher is _", () -> parameters.get("teacher"))
+                .sayIf(", in _", () -> parameters.get("classroom"))
                 .build();
 
         return new RichResponse().of(simpleResponse);
     }
 
     private String prettyNames(List<Event> events) {
-        return events.stream().limit(7).map(Event::getSummary).collect(Collectors.joining(", \n "));
+        return events.stream().limit(7).map(Event::getSummary).collect(Collectors.joining(", \n \n "));
     }
 
     private List<Suggestion> suggestions(int max) {

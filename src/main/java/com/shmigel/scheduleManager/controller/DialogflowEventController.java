@@ -51,8 +51,8 @@ public class DialogflowEventController {
 
     @EventMapping("EVENT")
     public DialogflowResponse event(String date, String position) {
-        return messagePrepare.event(calendar.eventByPosition(new DateTime(date).getDayOfMonth(),
-                Double.valueOf(position).intValue()));
+        return messagePrepare.eventByPosition(calendar.eventByPosition(new DateTime(date).getDayOfMonth(),
+                Double.valueOf(position).intValue()), position);
     }
 
     @EventMapping("ADD_USER")
