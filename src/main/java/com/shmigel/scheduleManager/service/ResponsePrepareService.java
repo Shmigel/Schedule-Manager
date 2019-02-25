@@ -60,9 +60,11 @@ public class ResponsePrepareService {
 
         DateTime start = dateTimeUtil.toJDateTime(dayEvents.get(0).getStart().getDateTime());
         SimpleResponse simpleResponse = new SimpleResponseBuilder()
-                .say("Here is your brief plan for " + start.toString(DateTimeFormatters.monthDay.formatter())).pause("300ms")
+                .say("Below is your brief plan for " + start.toString(DateTimeFormatters.monthDay.formatter())).pause("300ms")
                 .say("You have " + dayEvents.size() + " events,")
+                .newLine()
                 .say(prettyNames(dayEvents))
+                .newLine()
                 .say("which will start at " + dateTimeUtil.startTime(dayEvents.get(0)))
                 .say("and be over by " + dateTimeUtil.endTime(dayEvents.get(dayEvents.size() - 1)))
                 .say("Good luck")
@@ -74,7 +76,7 @@ public class ResponsePrepareService {
     /**
      * Since all solo eventByPosition response has the same body of eventByPosition but with different header
      * (ex. "Right now you have lecture of ...", "Your next event is ...")
-     * @param header
+     * @param header response starting
      * @return
      */
     private DialogflowResponse eventResponse(String header, Event event) {
@@ -96,7 +98,7 @@ public class ResponsePrepareService {
     }
 
     private String prettyNames(List<Event> events) {
-        return events.stream().limit(7).map(Event::getSummary).collect(Collectors.joining(", \n \n "));
+        return events.stream().map(Event::getSummary).collect(Collectors.joining("\n"));
     }
 
     private List<Suggestion> suggestions(int max) {
