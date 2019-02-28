@@ -2,41 +2,22 @@ package com.shmigel.scheduleManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
-import com.shmigel.scheduleManager.config.GoogleBeanConfiguration;
 import com.shmigel.scheduleManager.dialogflow.model.request.*;
 import com.shmigel.scheduleManager.dialogflow.model.response.DialogflowResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.message.SimpleResponseBuilder;
-import com.shmigel.scheduleManager.exception.GoogleCalendarException;
-import com.shmigel.scheduleManager.repository.CalendarRepository;
 import com.shmigel.scheduleManager.service.Auth0TokenService;
 import com.shmigel.scheduleManager.service.CalendarService;
 import com.shmigel.scheduleManager.service.ResponsePrepareService;
 import com.shmigel.scheduleManager.util.DateTimeUtil;
-import com.shmigel.scheduleManager.util.GoogleBeansTuple;
 import io.vavr.Tuple2;
 import io.vavr.control.Option;
-import io.vavr.control.Try;
-import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -44,8 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,11 +35,54 @@ import java.util.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@Slf4j
 public class ScheduleManagerApplicationTests {
 
-    @Autowired
-    private MockMvc mockMvc;
+	private static Logger logger = LoggerFactory.getLogger(ScheduleManagerApplicationTests.class);
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@Autowired
+	private Auth0TokenService tokenManager;
+
+	@Autowired
+	private ApplicationContext context;
+
+	@Autowired
+	private CalendarService calendarService;
+
+	private String jsonOf(Object o) {
+		String json = "";
+		try {
+			json = new ObjectMapper()
+					.writeValueAsString(o);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+
+	private String token = "87iGLyNgLh-Hw8VTcGfjeOOwHyuxxqDi";
+
+	private Request request(String action) {
+		return new Request(
+				new QueryResult(action, action, null),
+				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK", "1")))
+		);
+	}
+
+	private Request requestWithParameters(String action, Map<String, String> parameters) {
+		return new Request(
+				new QueryResult(action, action, parameters),
+				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK", "1")))
+		);
+	}
+
+	@Test
+	public void getController() throws Exception {
+		MvcResult test = mockMvc.perform(get("/")).andExpect(status().isOk()).andReturn();
+		logger.info("Return form get request: {}", test.getResponse().getContentAsString());
+	}
 
 	@Test
 	public void baseController() throws Exception {
@@ -69,32 +91,87 @@ public class ScheduleManagerApplicationTests {
 				.andExpect(status().isOk()).andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 		assertNotNull(contentAsString);
-		log.info("Return from post request {}", contentAsString);
+		logger.info("Return from post request {}", contentAsString);
 	}
 
-    private String jsonOf(Object o) {
-        String json = "";
-        try {
-            json = new ObjectMapper()
-                    .writeValueAsString(o);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return json;
-    }
+	@Test
+	public void control() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(request("TEST_EVENT"))))
+				.andExpect(status().isOk()).andReturn();
+		String content = result.getResponse().getContentAsString();
+		assertNotNull(content);
+		logger.debug("Returned from request:"+content);
+	}
 
-    private Request request(String action) {
-        return new Request(
-                new QueryResult(action, action, null),
-                new OriginalDetectIntentRequest(new Payload(new User("TIME", null, "UK", "1")))
-        );
-    }
+	@Test
+	public void testTokenManager() {
+		Tuple2<String, String> load = tokenManager.getTokens(token);
+		logger.debug("Receive accessToken:"+ load._1()+", refresh:"+load._2());
+	}
 
-    private Request requestWithParameters(String action, Map<String, String> parameters) {
-        return new Request(
-                new QueryResult(action, action, parameters),
-                new OriginalDetectIntentRequest(new Payload(new User("TIME", null, "UK", "1")))
-        );
-    }
+	@Test
+	public void upcomingEventTest() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(request("UPCOMING_EVENT"))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return post request {}", contentAsString);
+	}
 
+	@Test
+	public void liveEventTest() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(request("LIVE_EVENT"))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from request {}", contentAsString);
+	}
+
+	@Test
+	public void dayEventsTest() throws Exception {
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(requestWithParameters("DAY_EVENTS", Collections.singletonMap("date", new DateTime().plusDays(1).toString())))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from request {}", contentAsString);
+	}
+
+	@Test
+	public void eventsTest() throws Exception {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("date", "2018-10-22T22:08:03+03:00");
+		parameters.put("position", "1.0");
+		MvcResult result = mockMvc.perform(post("/").contentType("application/json")
+				.content(jsonOf(requestWithParameters("EVENT", parameters))))
+				.andExpect(status().isOk()).andReturn();
+		String contentAsString = result.getResponse().getContentAsString();
+		logger.info("Return from request {}", contentAsString);
+	}
+
+	@Test
+	public void test() {
+		ResponsePrepareService bean = context.getBean(ResponsePrepareService.class);
+		DateTimeUtil bean1 = context.getBean(DateTimeUtil.class);
+
+		Tuple2<com.google.api.client.util.DateTime, com.google.api.client.util.DateTime> dayPeriod
+				= bean1.dayPeriod(23);
+
+		Event test_event = new Event().setSummary("FacilityDTO eventByPosition").setDescription("author: Shmigel\n place: kc-2")
+				.setStart(new EventDateTime().setDateTime(dayPeriod._1))
+				.setEnd(new EventDateTime().setDateTime(dayPeriod._2));
+
+		DialogflowResponse response = bean.upcomingEventMessage(test_event);
+
+		System.out.println(response);
+
+		Option<Event> event = calendarService.eventByPosition(25, 1);
+		System.out.println(bean.eventByPosition(event, "1"));
+	}
+
+	@Test
+	public void addCalendarTest() throws Exception {
+		CalendarService calendar = context.getBean(CalendarService.class);
+		calendar.addUser("shmigelvolodimir.fake@gmail.com", "reader");
+	}
 }

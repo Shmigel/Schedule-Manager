@@ -37,7 +37,7 @@ public class BaseController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<?> baseController(@RequestBody Request request, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<DialogflowResponse> baseController(@RequestBody Request request, @RequestHeader HttpHeaders headers) {
         logger.debug("Post request body: {}", request);
         setupAuth0Token(request);
         DialogflowResponse response = controllerInvoker.invokeProperMethod(request);
