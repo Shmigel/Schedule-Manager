@@ -74,7 +74,7 @@ public class ResponsePrepareService {
     }
 
     /**
-     * Since all solo eventByPosition response has the same body of eventByPosition but with different header
+     * Since all solo event response has the same body of eventByPosition but with different header
      * (ex. "Right now you have lecture of ...", "Your next event is ...")
      * @param header response starting
      * @return

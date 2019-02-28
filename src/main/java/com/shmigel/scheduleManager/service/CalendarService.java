@@ -1,7 +1,6 @@
 package com.shmigel.scheduleManager.service;
 
 import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.shmigel.scheduleManager.repository.CalendarRepository;
 import com.shmigel.scheduleManager.util.DateTimeUtil;

@@ -23,34 +23,6 @@ public class ScheduleManagerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScheduleManagerApplication.class, args);
-		ScheduleManagerApplication scheduleManagerApplication = new ScheduleManagerApplication();
-		scheduleManagerApplication.test();
-	}
-
-	private void test() {
-		Request today_event = request("TODAY_EVENT");
-		System.out.println(jsonOf(today_event));
-	}
-
-
-	private String token = "pOMOfnhxY0HQqggj-OzpQ-mCjf5xZZEn";
-
-	private Request request(String action) {
-		return new Request(
-				new QueryResult(action, action, null),
-				new OriginalDetectIntentRequest(new Payload(new User("TIME", token, "UK", "1")))
-		);
-	}
-
-	private String jsonOf(Object o) {
-		String json = "";
-		try {
-			json = new ObjectMapper()
-					.writeValueAsString(o);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		return json;
 	}
 
 }

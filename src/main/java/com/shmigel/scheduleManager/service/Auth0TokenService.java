@@ -40,7 +40,7 @@ public class Auth0TokenService {
                 .header("Authorization", "Bearer " + auth0Token));
 
         return Option.of(userInfoResponse.getBody().getObject().get("sub").toString())
-                .getOrElseThrow(Auth0Exception::new);
+                .getOrElseThrow(() -> new Auth0Exception("sub(id) is missing in auth0 /userinfo response"));
     }
 
     private String getAuth0ManagerToken() {
@@ -49,7 +49,7 @@ public class Auth0TokenService {
                 .body(preparedBody()));
 
         return Option.of(auth0ManagerTokenResponse.getBody().getObject().get("access_token").toString())
-                .getOrElseThrow(Auth0Exception::new);
+                .getOrElseThrow(() -> new Auth0Exception("access_token si missing in aoth0 /oauth/token response"));
     }
 
     private Tuple2<String, String> getGoogleTokens(String userId, String auth0ManagerToken) {
@@ -74,11 +74,12 @@ public class Auth0TokenService {
     }
 
     private Tuple2<String, String> loadTokens(String userToken) {
+        log.info("Loading auth0 tokens");
         String userId = getUserId(userToken);
         String auth0ManagerToken = getAuth0ManagerToken();
 
         Tuple2<String, String> tokens = getGoogleTokens(userId, auth0ManagerToken);
-        log.info("userId:"+userId+" access_token:"+ tokens._1 +", refresh_token:"+ tokens._2);
+        log.debug("userId:"+userId+" access_token:"+ tokens._1 +", refresh_token:"+ tokens._2);
         return tokens;
     }
 

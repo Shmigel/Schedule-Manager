@@ -46,6 +46,6 @@ dependencies {
 	compile 'joda-time:joda-time:2.10'
 	
 //	runtime('org.springframework.boot:spring-boot-devtools')
-	compileOnly('org.projectlombok:lombok')
+	compile('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

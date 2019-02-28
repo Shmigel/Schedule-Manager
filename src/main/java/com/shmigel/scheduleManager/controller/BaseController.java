@@ -50,6 +50,7 @@ public class BaseController {
      * Set authToken in {@link GoogleBeanConfiguration} class in order to later load google tokens
      * and create {@link GoogleCredential} bean.
      *
+     * @see GoogleBeanConfiguration#googleCredential(String)
      * @param request get authToken called accessToken in request JSON
      */
     private void setupAuth0Token(Request request) {

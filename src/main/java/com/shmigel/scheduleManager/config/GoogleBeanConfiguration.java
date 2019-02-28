@@ -58,6 +58,7 @@ public class GoogleBeanConfiguration {
         this.auth0Token = auth0Token;
     }
 
+    @Cacheable
     private GoogleCredential googleCredential(String auth0Token) {
         log.info("Building google credential on auth0Token: {}", auth0Token);
         Tuple2<String, String> googleToken = tokenManager.getTokens(auth0Token);
@@ -98,12 +99,12 @@ public class GoogleBeanConfiguration {
     private CalendarListEntry managedCalendar(Calendar googleCalendar) {
         log.info("Looking for managed calendar from: {}", googleCalendar);
         List<CalendarListEntry> list = Try.of(() -> googleCalendar.calendarList().list().execute())
-                .getOrElseThrow(GoogleCalendarException::new).getItems();
+                .getOrElseThrow(() -> new GoogleCalendarException("Could'nt load calendar list")).getItems();
 
         return list.stream().filter(i -> i.getSummary().equals(defaultCalendarName))
                 .findFirst().orElseThrow(() -> {
                     log.error("Calendar with default managed calendar name wasn't found");
-                    return new GoogleCalendarException();
+                    return new GoogleCalendarException("Calendar with default managed calendar name wasn't found");
                 });
     }
 }

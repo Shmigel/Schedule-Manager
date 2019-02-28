@@ -19,6 +19,10 @@ public class CalendarRepository {
     @Autowired
     private GoogleBeanConfiguration googleBean;
 
+    public CalendarRepository(GoogleBeanConfiguration googleBean) {
+        this.googleBean = googleBean;
+    }
+
     public List<Event> upcomingEvents(int maxResult,
                                       DateTime start, DateTime end) {
         GoogleBeansTuple calendar = googleBean.calendar();
