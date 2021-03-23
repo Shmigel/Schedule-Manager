@@ -1,20 +1,9 @@
 package com.shmigel.scheduleManager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shmigel.scheduleManager.controller.BaseController;
-import com.shmigel.scheduleManager.dialogflow.model.request.*;
-import com.shmigel.scheduleManager.dialogflow.model.response.DialogflowResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.RichResponse;
-import com.shmigel.scheduleManager.dialogflow.model.response.message.SimpleResponseBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.stereotype.Controller;
 
 @SpringBootApplication
 @EnableCaching

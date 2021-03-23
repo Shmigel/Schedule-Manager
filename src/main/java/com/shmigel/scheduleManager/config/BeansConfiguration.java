@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -46,4 +47,16 @@ public class BeansConfiguration {
     EventDescriptionParser eventDescriptionParser() {
         return new EventDescriptionParser();
     }
+
+    @Bean
+    public CommonsRequestLoggingFilter logFilter() {
+        final CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
+        filter.setIncludeQueryString(true);
+        filter.setIncludePayload(true);
+        filter.setMaxPayloadLength(10000);
+        filter.setIncludeHeaders(true);
+        filter.setAfterMessagePrefix("REQUEST DATA : ");
+        return filter;
+    }
+
 }
